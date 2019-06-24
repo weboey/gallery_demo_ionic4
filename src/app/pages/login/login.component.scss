@@ -1,0 +1,17 @@
+ion-content{
+  ion-grid{
+    padding: 30px 60px;
+  }
+}
+
+ion-col.translateY3{
+  transform: translateY(3px);
+}
+
+.border-bottom{
+  border-bottom: 1px solid rgba(#999, .2);
+}
+
+ion-toggle{
+  margin-left: -12px;
+}
