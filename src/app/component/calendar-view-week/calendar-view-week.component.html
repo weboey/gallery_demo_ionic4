@@ -1,0 +1,41 @@
+
+
+<div class="ant-fullcalendar ant-fullcalendar-full ant-fullcalendar-fullscreen">
+  <div>
+    <div class="ant-fullcalendar-calendar-body">
+      <ul role="row" class="calendar-box">
+        <li *ngFor="let day of daysInWeek"
+            class="ant-fullcalendar-column-header"
+            role="columnheader"
+            [title]="day.title">
+          <span class="ant-fullcalendar-column-header-inner">{{ day.label }}</span>
+        </li>
+      </ul>
+    </div>
+    <div #panel class="swiper-container" (tap)="close($event)" (press)="openOption($event)">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let dateMatrixItem of dateMatrixList">
+          <div class="swiper-zoom-container">
+            <div class="week-body">
+              <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box">
+                <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell">
+                  {{ day.label }}
+                </li>
+              </ul>
+              <ul class="time-box">
+                <li *ngFor="let time of timeViewList; index as row" class="time-item">
+                  <span>{{time}}</span>
+                  <ul *ngFor="let week of dateMatrixItem; index as row" class="inner-box calendar-box">
+                    <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell">
+                      {{ day.label }}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

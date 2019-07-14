@@ -1,0 +1,27 @@
+ion-label{
+  display: flex !important;
+  flex-direction: column;
+  span{
+    color: #666;
+    font-size: 1.2rem;
+    &.date{
+      color: #999;
+      font-size: 1rem;
+    }
+  }
+}
+ion-item{
+  border-bottom: 1px solid rgba(#999, .3);
+
+  --color: #333;
+  --inner-border-width: 0;
+}
+.s-ion-icon{
+  color: red;
+}
+ion-item-sliding{
+  ion-icon{
+    color: #4c8dff;
+  }
+}
+

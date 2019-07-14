@@ -1,3 +1,62 @@
-<p>
-  home works!
-</p>
+<ion-header>
+  <div class="head">
+    <div  class="head-box">
+      <div>
+        四月 今天
+      </div>
+      <div class="g-right">
+        <div class="nav">
+          <ion-icon name="list" (click)="showNavListPanel()"></ion-icon>
+        </div>
+        <div><ion-icon name="contact"></ion-icon></div>
+      </div>
+    </div>
+    <div *ngIf="navView" [@myInsertRemoveTrigger] class="view-list-nav">
+      <ul>
+        <li routerLink="/list-viewer">列表</li>
+        <li (click)="toggleMode('month')" [class.on]="'month' === viewMode">月</li>
+        <li (click)="toggleMode('week')" [class.on]="'week' === viewMode">周</li>
+        <li (click)="toggleMode('day')" [class.on]="'day' === viewMode">日</li>
+      </ul>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content>
+  <ng-container [ngSwitch]="viewMode">
+    <ng-container *ngSwitchCase="'month'" [ngTemplateOutlet]="monthModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'week'" [ngTemplateOutlet]="weekModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'day'" [ngTemplateOutlet]="dayModeTable"></ng-container>
+  </ng-container>
+
+  <ng-template #monthModeTable>
+    <app-calendar-view></app-calendar-view>
+  </ng-template>
+  <ng-template #weekModeTable>
+    <app-calendar-view-week></app-calendar-view-week>
+  </ng-template>
+  <ng-template #dayModeTable>
+    <app-calendar-view-day></app-calendar-view-day>
+  </ng-template>
+
+  <!--<ion-fab vertical="top" horizontal="end" slot="fixed">-->
+    <!--<ion-fab-button>-->
+      <!--<ion-icon name="add"  (click)="openRecordSound()"></ion-icon>-->
+    <!--</ion-fab-button>-->
+  <!--</ion-fab>-->
+
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button size="small" color="secondary">
+      <ion-icon name="add"  (tap)='enterCreateTaskPage()' (press)="openRecordSound2()" (touchend)="stopRecord()"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!--<ng-container>-->
+    <!--<div class="audio-modal" *ngIf="isAudioRecording">-->
+      <!--<ion-icon name="mic"></ion-icon>-->
+      <!--<ion-icon name="stats"></ion-icon>-->
+    <!--</div>-->
+  <!--</ng-container>-->
+
+</ion-content>
+

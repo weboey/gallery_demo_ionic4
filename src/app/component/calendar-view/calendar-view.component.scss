@@ -1,0 +1,50 @@
+.ant-fullcalendar-selected-day{
+  .ant-fullcalendar-value{
+    border-radius: 50%;
+    color: #fff;
+    background: #1890ff;
+  }
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-month-panel-selected-cell .ant-fullcalendar-month, .ant-fullcalendar-fullscreen .ant-fullcalendar-selected-day .ant-fullcalendar-date{
+  background: initial !important;
+}
+.ant-fullcalendar-value{
+  height: 40px !important;
+  line-height: 40px !important;
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-date {
+  display: block;
+  height: 76px;
+  margin: 0 4px;
+  padding: 4px 0px;
+  color: rgba(0, 0, 0, 0.65);
+  text-align: left;
+  //border-top: 2px solid #e8e8e8;
+  border-top: none !important;
+  transition: background 0.3s;
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-value{
+  text-align: center;
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-column-header {
+  padding-right: 12px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  text-align: center;
+}
+
+
+ul.week-box{
+  display: flex;
+  li{
+    list-style-type:none;
+    display: block;
+    height: 76px;
+    margin: 0 4px;
+    padding: 4px 0px;
+    color: rgba(0, 0, 0, 0.65);
+    text-align: left;
+    border-top: none !important;
+    transition: background 0.3s;
+  }
+}
