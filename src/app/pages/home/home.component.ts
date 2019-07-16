@@ -3,6 +3,7 @@ import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { File } from '@ionic-native/file/ngx';
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Router} from "@angular/router";
+import {UtilsService} from "../../services/utils.service";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -21,7 +22,8 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit, AfterViewInit {
     viewMode = 'day';
-  constructor(private media: Media, private file: File, private router: Router) { }
+  constructor(private media: Media, private file: File, private router: Router,
+              private utils: UtilsService) { }
     navView = false;
     isAudioRecording = false;
   ngOnInit() {
@@ -36,13 +38,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   openRecordSound() {
     alert('开始录音');
-      const file: MediaObject = this.media.create(this.file.externalRootDirectory + 'file2.mp3');
-      file.startRecord();
-      // file.stopRecord();
-      setTimeout(() => {
-          file.stopRecord();
-          alert('录音 over');
-      }, 20000);
+    const fileName = this.utils.generateRandomString(8);
+    const file: MediaObject = this.media.create(this.file.externalRootDirectory + `${fileName}.mp3`);
+    file.startRecord();
+    // file.stopRecord();
+    setTimeout(() => {
+      file.stopRecord();
+      alert('录音 over');
+    }, 20000);
   }
   openRecordSound2() {
       console.log('开始录音');
