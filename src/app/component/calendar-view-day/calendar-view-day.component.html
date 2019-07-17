@@ -12,15 +12,21 @@
         </li>
       </ul>
       <div class="calendar-body" [class.calendar-day-full-size]="isDayViewFull">
-        <ul class="time-box" *ngFor="let dateMatrixItem of dateMatrixList">
-          <li>
-            <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box">
-              <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell">
-                {{ day.label }}
-              </li>
-            </ul>
-          </li>
-        </ul>
+        <ng-container *ngFor="let dateMatrixItem of dateMatrixList;  index as row">
+          <ul class="time-box" [class.ant-fullcalendar-active-week]="row === activeDateRow">
+            <li>
+              <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box">
+                <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell"
+                    [class.ant-fullcalendar-today]="row === currentDateRow && col === currentDateCol"
+                    [class.calendar-selected-day]="row === activeDateRow && col === activeDateCol"
+                    [class.ant-fullcalendar-last-month-cell]="day.rel === 'last'"
+                    [class.ant-fullcalendar-next-month-btn-day]="day.rel === 'next'">
+                  {{ day.label }}
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </ng-container>
       </div>
     </div>
     <div #panel class="swiper-container">

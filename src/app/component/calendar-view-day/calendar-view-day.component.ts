@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {
+    AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, TemplateRef,
+    ViewChild
+} from '@angular/core';
 import { startOfWeek } from 'date-fns';
 import { addDays } from 'date-fns';
 // import { fnsFormat } from 'date-fns';
@@ -42,7 +45,7 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
   private isDayViewFull = false;
   timeViewList = [];
   taskList = [];
-  constructor(private element: ElementRef, private dateHelper: DateHelperService) { }
+  constructor(private element: ElementRef, private dateHelper: DateHelperService, private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.setUpDaysInWeek();
@@ -113,6 +116,12 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
       },
       paginationType: 'fraction', // 分页器类型
       on: {
+        slideChange: () => {
+          this.activeDate = addDays(this.activeDate, 1);
+          console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
+          this.calculateActiveDate();
+          this.cd.detectChanges();
+        }
       }
     });
   }
@@ -158,35 +167,11 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
     }
     this.dateMatrixList.push(dateMatrix);
   }
-  private setMonthDateMatrix(monthDate) {
-    const dateMatrix = [];
-    const monthStart = startOfMonth(monthDate);
-    const monthEnd = endOfMonth(monthDate);
-    const weekDiff =
-      differenceInCalendarWeeks(monthEnd, monthStart, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() }) + 2;
-
-    for (let week = 0; week < weekDiff; week++) {
-      const row: DateCellContext[] = [];
-      const weekStart = addDays(this.calendarStart, week * 7);
-      for (let day = 0; day < 7; day++) {
-        const date = addDays(weekStart, day);
-        const monthDiff = differenceInCalendarMonths(date, monthDate);
-        const dateFormat = 'longDate';
-        const title = this.dateHelper.format(date, dateFormat);
-        const label = this.dateHelper.format(date, this.dateHelper.relyOnDatePipe ? 'dd' : 'DD');
-        const rel = monthDiff === 0 ? 'current' : monthDiff < 0 ? 'last' : 'next';
-        row.push({ title, label, rel, value: date });
-      }
-      dateMatrix.push(row);
-    }
-    this.dateMatrixList.push(dateMatrix);
-    return  dateMatrix;
-  }
   private calculateActiveDate(): void {
-    this.activeDateRow = differenceInCalendarWeeks(this.activeDate, this.calendarStart, {
+    this.activeDateRow = differenceInCalendarWeeks(this.activeDate, this.calendarStartOfWeek, {
       weekStartsOn: this.dateHelper.getFirstDayOfWeek()
     });
-    this.activeDateCol = differenceInCalendarDays(this.activeDate, addDays(this.calendarStart, this.activeDateRow * 7));
+    this.activeDateCol = differenceInCalendarDays(this.activeDate, addDays(this.calendarStartOfWeek, this.activeDateRow * 7));
   }
   private calculateActiveMonth() {
     this.activeMonthRow = Math.floor(this.activeDate.getMonth() / 3);
