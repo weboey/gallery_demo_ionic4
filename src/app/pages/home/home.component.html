@@ -22,7 +22,7 @@
   </div>
 </ion-header>
 
-<ion-content>
+<ion-content [scrollY]="false">
   <ng-container [ngSwitch]="viewMode">
     <ng-container *ngSwitchCase="'month'" [ngTemplateOutlet]="monthModeTable"></ng-container>
     <ng-container *ngSwitchCase="'week'" [ngTemplateOutlet]="weekModeTable"></ng-container>

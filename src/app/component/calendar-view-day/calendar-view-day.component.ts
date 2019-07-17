@@ -6,6 +6,7 @@ import {DateHelperService} from "../../services/date-helper.service";
 import { formatDate } from '@angular/common';
 import { startOfMonth } from 'date-fns';
 import { endOfMonth } from 'date-fns';
+import { endOfWeek } from 'date-fns';
 import { differenceInCalendarMonths } from 'date-fns';
 import { differenceInCalendarWeeks } from 'date-fns';
 import { differenceInCalendarDays } from 'date-fns';
@@ -66,10 +67,14 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
         this.timeViewList.push(`下午 ${i}:00`);
       }
     }
+    // title: `上午 0${i} -- 吃早餐`,
     for (let i = 1; i < 5; i++) {
-      this.taskList.push({
-        title: `上午 0${i} -- 吃早餐`
-      });
+      const date = 17 + i;
+      const tasks = [];
+      for (let j = 0; j < 3; j++) {
+        tasks.push({title: `上午 0${i} -- 吃早餐`});
+      }
+      this.taskList.push({tasks, date});
     }
   }
   ngAfterViewInit(): void {
@@ -114,21 +119,32 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
   private get calendarStart(): Date {
     return startOfWeek(startOfMonth(this.activeDate), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });
   }
+  // 计算周
+  private get calendarStartOfWeek(): Date {
+    return startOfWeek(this.activeDate, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });
+  }
+  // 日视图 设置当月数据
   private setMulMonthDateMatrix() {
     const curMonth = this.activeDate.getMonth();
-    for (let i = 1; i < 5; i++) {
-      this.monthChangeHandler(curMonth + i - 2);
-    }
+    // for (let i = 1; i < 5; i++) {
+    //   this.monthChangeHandler(curMonth + i - 2);
+    // }
+    // this.monthChangeHandler(curMonth);
+    this.setUpDateMatrix();
   }
   private setUpDateMatrix(isTop = false): void {
     const dateMatrix = [];
     const monthStart = startOfMonth(this.activeDate);
+    const weekStart = startOfWeek(this.activeDate);
     const monthEnd = endOfMonth(this.activeDate);
+    const weekEnd = endOfWeek(this.activeDate);
+    console.log(formatDate(weekStart, 'yyyy-MM-dd', 'zh_CN'));
+    console.log(formatDate(weekEnd, 'yyyy-MM-dd', 'zh_CN'));
     const weekDiff =
       differenceInCalendarWeeks(monthEnd, monthStart, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() }) + 2;
-    for (let week = 0; week < weekDiff; week++) {
+    for (let week = 0; week < 1; week++) {
       const row: DateCellContext[] = [];
-      const weekStart = addDays(this.calendarStart, week * 7);
+      const weekStart = addDays(this.calendarStartOfWeek, week * 7);
       for (let day = 0; day < 7; day++) {
         const date = addDays(weekStart, day);
         const monthDiff = differenceInCalendarMonths(date, this.activeDate);

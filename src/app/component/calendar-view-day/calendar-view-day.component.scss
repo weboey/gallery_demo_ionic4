@@ -67,8 +67,9 @@
     text-align: center;
   }
 }
+
 .time-box{
-  display: flex;
+  //display: flex;
   padding: 0;
   flex-direction: column;
   justify-content: space-between;
@@ -88,14 +89,14 @@
       width: 62px;
       font-size: 12px;
     }
-    ul{
+    app-calendar-view-task{
       flex: 1;
     }
   }
 }
 .content-body{
   width: 100%;
-  height: calc(100vh - 86px);
+  height: calc(100vh - 100px);
   display: flex;
   flex-direction: column;
   .calendar-box{
@@ -123,15 +124,4 @@
   text-align: left;
   padding: 2px 6px;
 }
-.task-box{
-  display: flex;
-  li{
-    padding: 0 3px;
-    list-style-type:none;
-    border-radius: 4px;
-    margin-right: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-left: 2px solid rgba(green, .6);
-    background-color: rgba(green, .1);
-  }
-}
+
