@@ -1,9 +1,12 @@
 ion-label{
   display: flex !important;
   flex-direction: column;
+  margin-left: 16px;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
   span{
     color: #666;
-    font-size: 1.2rem;
+    font-size: 1rem;
     &.date{
       color: #999;
       font-size: 1rem;
@@ -11,7 +14,7 @@ ion-label{
   }
 }
 ion-item{
-  border-bottom: 1px solid rgba(#999, .3);
+  border-bottom: 1px solid rgba(#999, .15);
 
   --color: #333;
   --inner-border-width: 0;
@@ -25,3 +28,7 @@ ion-item-sliding{
   }
 }
 
+ion-list{
+  padding-bottom: 46px
+
+}

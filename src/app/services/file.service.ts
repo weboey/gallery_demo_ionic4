@@ -10,7 +10,7 @@ export class FileService {
   fileTransfer: FileTransferObject = this.transfer.create();
   upload(fileUrl) {
     // const url = this.settings.system_url + '/api_article/v1/first_page/upImage/';
-    const url = '/api_article/v1/first_page/upImage/';
+    const url = 'http://192.168.16.188:7070/api_note/v1/upload_wav';
     const filename = this.createFileName(); //定义上传后的文件名
     const options: FileUploadOptions = {
       fileKey: "file",
@@ -21,13 +21,16 @@ export class FileService {
     };
     const fileTransfer: FileTransferObject = this.transfer.create();
       //开始正式地上传
-    fileTransfer.upload(fileUrl, url, options).then((data: any) => {
-      //在用户看清弹窗提示后进行页面的关闭
-      let resp = JSON.parse(data.response);
-      console.log(resp);
-    }, err => {
-
-    });
+    return new Promise((resolve, reject) => {
+        fileTransfer.upload(fileUrl, url, options).then((data: any) => {
+            //在用户看清弹窗提示后进行页面的关闭
+            let resp = JSON.parse(data.response);
+            console.log(resp);
+            resolve(resp);
+        }, err => {
+            reject(err);
+        });
+    })
   }
   download() {
     const url = 'http://www.example.com/file.pdf';

@@ -23,15 +23,15 @@ import zh from '@angular/common/locales/zh';
 import {NZ_DATE_CONFIG} from "./services/date-helper.service";
 import { TaskCreateComponent } from './pages/task-create/task-create.component';
 import { CalendarModalComponent } from './pages/calendar-modal/calendar-modal.component';
+import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 registerLocaleData(zh);
 @NgModule({
   declarations: [
       AppComponent,
       TaskListComponent,
-      TaskListGroupComponent,
       TaskDetailComponent,
       TaskCreateComponent,
-      CalendarModalComponent
+      CalendarModalComponent,
   ],
   entryComponents: [CalendarModalComponent],
   imports: [
@@ -50,6 +50,7 @@ registerLocaleData(zh);
     Camera,
     Media,
     File,
+      FileTransfer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       { provide: NZ_DATE_CONFIG, useValue: {
               firstDayOfWeek: 0

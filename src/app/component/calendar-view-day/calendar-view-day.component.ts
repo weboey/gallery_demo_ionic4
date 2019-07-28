@@ -18,13 +18,14 @@ import { isThisMonth } from 'date-fns';
 import { isSameYear } from 'date-fns';
 import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
+import {CalendarBase} from "../calendar-base/calendar-base";
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view-day',
   templateUrl: './calendar-view-day.component.html',
   styleUrls: ['./calendar-view-day.component.scss']
 })
-export class CalendarViewDayComponent implements OnInit, AfterViewInit {
+export class CalendarViewDayComponent extends CalendarBase implements OnInit, AfterViewInit {
   @Input() nzMode = 'month';
   swiper: any = {isEnd: false};
   daysInWeek: DayCellContext[] = [];
@@ -45,7 +46,9 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
   private isDayViewFull = false;
   timeViewList = [];
   taskList = [];
-  constructor(private element: ElementRef, private dateHelper: DateHelperService, private cd: ChangeDetectorRef) { }
+  constructor(private element: ElementRef, private dateHelper: DateHelperService, private cd: ChangeDetectorRef) {
+    super();
+  }
 
   ngOnInit() {
     this.setUpDaysInWeek();
@@ -56,20 +59,20 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
     this.setTimeViewData();
   }
   setTimeViewData() {
-    for (let i = 1; i < 12; i++) {
+    for (let i = 0; i < 24; i++) {
+      if (i < 10 ) {
+        this.timeViewList.push(`0${i}:00`);
+      } else {
+        this.timeViewList.push(`${i}:00`);
+      }
+    }
+    /*for (let i = 1; i < 12; i++) {
       if (i < 10 ) {
         this.timeViewList.push(`上午 0${i}:00`);
       } else {
         this.timeViewList.push(`下午 ${i}:00`);
       }
-    }
-    for (let i = 1; i < 12; i++) {
-      if (i < 10 ) {
-        this.timeViewList.push(`上午 0${i}:00`);
-      } else {
-        this.timeViewList.push(`下午 ${i}:00`);
-      }
-    }
+    }*/
     // title: `上午 0${i} -- 吃早餐`,
     for (let i = 1; i < 5; i++) {
       const date = 17 + i;
@@ -117,10 +120,17 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
       paginationType: 'fraction', // 分页器类型
       on: {
         slideChange: () => {
-          this.activeDate = addDays(this.activeDate, 1);
-          console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
-          this.calculateActiveDate();
-          this.cd.detectChanges();
+          console.log(this.swiper);
+          if(this.swiper.initialized) {
+            if(this.swiper.swipeDirection === 'prev') {
+                this.activeDate = addDays(this.activeDate, -1);
+            } else {
+                this.activeDate = addDays(this.activeDate, 1);
+            }
+            console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
+            this.calculateActiveDate();
+            this.cd.detectChanges();
+          }
         }
       }
     });
@@ -141,7 +151,7 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
     // this.monthChangeHandler(curMonth);
     this.setUpDateMatrix();
   }
-  private setUpDateMatrix(isTop = false): void {
+  setUpDateMatrix(): void {
     const dateMatrix = [];
     const monthStart = startOfMonth(this.activeDate);
     const weekStart = startOfWeek(this.activeDate);
@@ -167,17 +177,17 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
     }
     this.dateMatrixList.push(dateMatrix);
   }
-  private calculateActiveDate(): void {
+  calculateActiveDate(): void {
     this.activeDateRow = differenceInCalendarWeeks(this.activeDate, this.calendarStartOfWeek, {
       weekStartsOn: this.dateHelper.getFirstDayOfWeek()
     });
     this.activeDateCol = differenceInCalendarDays(this.activeDate, addDays(this.calendarStartOfWeek, this.activeDateRow * 7));
   }
-  private calculateActiveMonth() {
+  calculateActiveMonth() {
     this.activeMonthRow = Math.floor(this.activeDate.getMonth() / 3);
     this.activeMonthCol = this.activeDate.getMonth() % 3;
   }
-  private calculateCurrentDate(): void {
+  calculateCurrentDate(): void {
     if (isThisMonth(this.activeDate)) {
       this.currentDateRow = differenceInCalendarWeeks(this.currentDate, this.calendarStart, {
         weekStartsOn: this.dateHelper.getFirstDayOfWeek()
@@ -197,11 +207,13 @@ export class CalendarViewDayComponent implements OnInit, AfterViewInit {
     console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
     this.updateDate(date);
   }
-  private updateDate(date: Date, touched: boolean = true): void {
+  updateDate(date: Date, touched: boolean = true): void {
     const dayChanged = !isSameDay(date, this.activeDate);
     const monthChanged = !isSameMonth(date, this.activeDate);
     const yearChanged = !isSameYear(date, this.activeDate);
+    console.log('重要---------------------当前 activeDate');
     this.activeDate = date;
+    console.log(this.activeDate);
     if (dayChanged) {
       this.calculateActiveDate();
     }

@@ -20,7 +20,8 @@
                     [class.ant-fullcalendar-today]="row === currentDateRow && col === currentDateCol"
                     [class.calendar-selected-day]="row === activeDateRow && col === activeDateCol"
                     [class.ant-fullcalendar-last-month-cell]="day.rel === 'last'"
-                    [class.ant-fullcalendar-next-month-btn-day]="day.rel === 'next'">
+                    [class.ant-fullcalendar-next-month-btn-day]="day.rel === 'next'"
+                    (click)="onDateSelect(day.value)">
                   {{ day.label }}
                 </li>
               </ul>
@@ -43,7 +44,7 @@
               </div>-->
               <div class="auto-content">
                 <div class="time-desc" (click)="doCalendarDayViewSize()">
-                  <span>今天 {{taskItem.date}}</span>
+                  <span>{{activeDate | date: 'MM-dd'}} {{taskItem.date}} <span class="back-cur-day" style="float: right">今</span></span>
                 </div>
                 <ul class="time-box">
                   <li *ngFor="let time of timeViewList; index as row" class="time-item">

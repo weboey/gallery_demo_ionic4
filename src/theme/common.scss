@@ -16,7 +16,7 @@ ul{
 /*----- head component start -----*/
 .head{
     padding: 12px;
-    background: #86ffcf;
+    background: var(--ion-color-primary-tint); // #40a9ff;;
     color: #fff;
     .head-box{
         display: flex;
@@ -37,7 +37,7 @@ ul{
             li{
                 list-style-type: none;
                 &.on{
-                    color: var(--ion-color-secondary-tint);
+                    color: var(--ion-color-success);
                 }
             }
         }

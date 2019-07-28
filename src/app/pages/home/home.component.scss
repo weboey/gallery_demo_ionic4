@@ -1,15 +1,20 @@
 .audio-modal{
   text-align: center;
-  background-color: rgba(#000, .3);
-  width: 120px;
-  height: 120px;
-  line-height: 128px;
+  background-color: rgba(#929292, 1);
+  width: 150px;
+  height: 150px;
+  padding: 16px 0;
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);
   ion-icon{
-    font-size: 2rem;
+    font-size: 4rem;
     color: #0bb8cc;
   }
+  p{
+    margin-bottom: .5em;
+    color: #fff;
+  }
+  z-index: 10000;
 }

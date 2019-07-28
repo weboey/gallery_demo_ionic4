@@ -9,23 +9,27 @@ import {UtilsService} from "../../services/utils.service";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
     animations: [
-        trigger('myInsertRemoveTrigger', [
-            transition(':enter', [
-                style({ height: 0 }),
-                animate('.22s', style({ height: '*' })),
-            ]),
-            transition(':leave', [
-                animate('.22s', style({ height: 0}))
-            ])
+      trigger('myInsertRemoveTrigger', [
+        transition(':enter', [
+            style({ height: 0 }),
+            animate('.22s', style({ height: 40 })),
+        ]),
+        transition(':leave', [
+            animate('.22s', style({ height: 0}))
         ])
+      ])
     ]
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-    viewMode = 'day';
+    viewMode = 'month';
+    audioText = '手指上划取消录音';
   constructor(private media: Media, private file: File, private router: Router,
               private utils: UtilsService) { }
     navView = false;
+    audioFile: MediaObject = null;
     isAudioRecording = false;
+    isStopRecord = false;
+    fileName = '';
   ngOnInit() {
 
   }
@@ -37,18 +41,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   openRecordSound() {
-    alert('开始录音');
-    const fileName = this.utils.generateRandomString(8);
-    const file: MediaObject = this.media.create(this.file.externalRootDirectory + `${fileName}.mp3`);
-    file.startRecord();
-    // file.stopRecord();
-    setTimeout(() => {
-      file.stopRecord();
-      alert('录音 over');
-    }, 20000);
+    this.audioText = '手指上划取消录音';
+    this.isAudioRecording = true;
+    this.isStopRecord = false;
+    this.fileName = this.utils.generateRandomString(8);
+    this.audioFile = this.media.create(this.file.externalRootDirectory + `${this.fileName}.mp3`);
+    this.audioFile.startRecord();
   }
   openRecordSound2() {
       console.log('开始录音');
+
       this.isAudioRecording = true;
       // this.file.createFile(this.file.externalRootDirectory, 'my_file.mp3', true).then(() => {
       //     let file = this.media.create(this.file.externalRootDirectory + 'my_file.m4a');
@@ -61,21 +63,40 @@ export class HomeComponent implements OnInit, AfterViewInit {
       //   window.document.addEventListener('')
   }
     stopRecord() {
-        console.log('结束录音');
-        this.isAudioRecording = false;
+      this.audioText = '录音已取消';
+      this.audioFile.release();
+      this.isStopRecord = true;
+      setTimeout(()=>{
+          console.log('结束录音');
+          this.isAudioRecording = false;
+      }, 700);
     }
     removeRecord() {
-        alert('删除录音');
+      alert('删除录音');
     }
     showNavListPanel() {
-        this.navView = !this.navView;
+      this.navView = !this.navView;
     }
 
     toggleMode(v) {
-        this.viewMode = v;
+      this.viewMode = v;
     }
-
-    enterCreateTaskPage() {
-        this.router.navigate(['/task-create'])
+    oneP2(ev) {
+      const evProp = ev.touches[0];
+      const target  = document.elementFromPoint(evProp.clientX || evProp.pageX, evProp.clientY || evProp.pageY);
+      if(target && (target.classList.contains('audio-modal') || target.parentNode['classList'].contains('audio-modal'))) {
+        this.stopRecord();
+      }
+    }
+    stopRecordSound() {
+      console.log('??????');
+      if(!this.isStopRecord) {
+        this.audioFile.stopRecord();
+        this.isAudioRecording = false;
+        this.enterCreateTaskPage(this.fileName)
+      }
+    }
+    enterCreateTaskPage(fileName?: string) {
+      this.router.navigate(['/task-create'], {queryParams: {fileName}})
     }
 }

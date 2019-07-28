@@ -1,0 +1,44 @@
+
+
+
+
+
+  <!--  <ion-button (click)="toggleInfiniteScroll()" expand="block">
+      Toggle Infinite Scroll
+    </ion-button>-->
+  <ion-content>
+    <div class="top-bar">
+      <div  *ngIf="queryView"  class="tip" style="float: left">仅支持查询一年内的记录</div>
+      <span>自定义查询</span>
+      <ion-icon name="calendar" (click)="customQuery()"></ion-icon>
+      <div *ngIf="queryView" [@myInsertRemoveTrigger] class="query-date-container">
+        <div class="query-date-box">
+          <ion-datetime [(value)]="startDate"
+                        min="2018-07-14"
+                        max="2020-07-14"
+                        cancelText="取消"
+                        (ionChange)="setDate($event, 'startDate')"
+                        doneText="确定"
+                        displayFormat="YYYY-MM-DD"
+                        placeholder="开始时间"></ion-datetime>
+          <span> > 至 > </span>
+          <ion-datetime [(value)]="endDate"
+                        min="2018-07-14"
+                        max="2020-07-14"
+                        cancelText="取消"
+                        (ionChange)="setDate($event, 'endDate')"
+                        doneText="确定"
+                        displayFormat="YYYY-MM-DD"
+                        placeholder="结束时间">
+          </ion-datetime>
+        </div>
+        <div class="btn-box">
+          <ion-button color="secondary" size="small" (click)="queryHandler()">查询</ion-button>
+        </div>
+      </div>
+    </div>
+
+    <app-task-list-group></app-task-list-group>
+  </ion-content>
+
+
