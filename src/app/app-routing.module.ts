@@ -8,6 +8,7 @@ const routes: Routes = [
   // { path: 'home', loadChildren: './tabs/tabs.module#TabsPageModule' },
   { path: 'home', loadChildren: './pages/home/home.module#HomeModule' },
   { path: 'login', loadChildren: './pages/login/login.module#LoginModule' },
+  { path: 'reset-password', loadChildren: './pages/reset-password/reset-password.module#ResetPasswordModule'},
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: 'register', loadChildren: './pages/register/register.module#RegisterModule' },
   { path: 'list-viewer', component: TaskListComponent },

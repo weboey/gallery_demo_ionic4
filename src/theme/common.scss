@@ -2,7 +2,9 @@ ion-icon{
     font-size: 1.4rem;
     color: #fff;
 }
-
+a{
+    color: #1abc9c !important;
+}
 input::-webkit-input-placeholder {
     color: #999 !important;
 }
@@ -44,8 +46,8 @@ ul{
     }
 }
 ion-toolbar{
-    --background: #86ffcf;
-    color: #fff;
+    --background: #f2f2f2;
+    color: #999;
 }
 .nav{
     margin-right: 15px;

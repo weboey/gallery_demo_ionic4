@@ -24,6 +24,7 @@ import {NZ_DATE_CONFIG} from "./services/date-helper.service";
 import { TaskCreateComponent } from './pages/task-create/task-create.component';
 import { CalendarModalComponent } from './pages/calendar-modal/calendar-modal.component';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 registerLocaleData(zh);
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ registerLocaleData(zh);
       TaskListComponent,
       TaskDetailComponent,
       TaskCreateComponent,
-      CalendarModalComponent,
+      CalendarModalComponent
   ],
   entryComponents: [CalendarModalComponent],
   imports: [
@@ -50,7 +51,7 @@ registerLocaleData(zh);
     Camera,
     Media,
     File,
-      FileTransfer,
+    FileTransfer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       { provide: NZ_DATE_CONFIG, useValue: {
               firstDayOfWeek: 0

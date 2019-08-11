@@ -15,3 +15,30 @@ ion-col.translateY3{
 ion-toggle{
   margin-left: -12px;
 }
+
+ion-icon{
+  font-size: 1.4rem;
+  color: #999;
+}
+
+.banner{
+  margin-top: 50px;
+  color: #999;
+  position: relative;
+  &:before{
+    content: "";
+    height: 1px;
+    background-color: rgba(#999, .3);
+    width: 70px;
+    transform: translateY(-15px);
+    //z-index: -1;
+  }
+  &:after{
+    content: "";
+    height: 1px;
+    background-color: rgba(#999, .3);
+    width: 70px;
+    transform: translateY(-15px);
+    //z-index: -1;
+  }
+}
