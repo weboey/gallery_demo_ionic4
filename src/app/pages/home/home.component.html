@@ -2,7 +2,7 @@
   <div class="head">
     <div  class="head-box">
       <div>
-        四月 今天
+        {{curDate | dateView}}
       </div>
       <div class="g-right">
         <div class="nav">
@@ -24,8 +24,12 @@
 
 <ion-content [scrollY]="false">
 
-
-  <app-task-list-view-container></app-task-list-view-container>
+  <ng-container [ngSwitch]="viewMode">
+    <ng-container *ngSwitchCase="'month'" [ngTemplateOutlet]="monthModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'week'" [ngTemplateOutlet]="weekModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'day'" [ngTemplateOutlet]="dayModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'list'" [ngTemplateOutlet]="listModeTable"></ng-container>
+  </ng-container>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'list' !== viewMode">
     <ion-fab-button size="small" color="secondary">
@@ -48,7 +52,7 @@
 
 
 <ng-template #monthModeTable>
-  <app-calendar-view></app-calendar-view>
+  <app-calendar-view (dateChange)="monthDateChangeHandler($event)"></app-calendar-view>
 </ng-template>
 <ng-template #weekModeTable>
   <app-calendar-view-week></app-calendar-view-week>

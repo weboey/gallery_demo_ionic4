@@ -12,7 +12,9 @@ export class CalendarViewTaskComponent implements OnInit {
 
   ngOnInit() {
   }
-  enterTaskDetailPage() {
-    this.router.navigate(['/task-detail'])
+  enterTaskDetailPage(task) {
+    this.router.navigate(['/task-detail'], {
+      queryParams: task
+    })
   }
 }

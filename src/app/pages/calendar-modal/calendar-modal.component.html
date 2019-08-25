@@ -1,15 +1,16 @@
 <ion-header>
   <ion-toolbar>
-    <div slot="start" style="padding-left: 12px">四月</div>
+    <div slot="start" style="padding-left: 12px">{{curDate | dateView}}</div>
     <div slot="end" style="padding-right: 12px" (click)="confirm()">确定</div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <h2>2222222</h2>
+  <app-calendar-view (nzSelectChange)="monthDateChangeHandler($event)"></app-calendar-view>
   <ion-item>
     <ion-label><ion-icon name="time"></ion-icon>设置时间</ion-label>
-    <ion-datetime displayFormat="HH:mm" cancelText="取消"
+    <ion-datetime displayFormat="HH:mm" cancelText="取消" [(value)]="curTime"
+                  (ionChange)="setDate($event, 'curTime')"
                   doneText="确定"></ion-datetime>
   </ion-item>
 </ion-content>

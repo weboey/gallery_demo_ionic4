@@ -1,6 +1,6 @@
 import {
-    AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, TemplateRef,
-    ViewChild
+  AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef,
+  ViewChild
 } from '@angular/core';
 import { startOfWeek } from 'date-fns';
 import { addDays } from 'date-fns';
@@ -19,6 +19,7 @@ import { isSameYear } from 'date-fns';
 import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
 import {CalendarBase} from "../calendar-base/calendar-base";
+import {HttpClient} from "@angular/common/http";
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view-day',
@@ -46,7 +47,11 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
   private isDayViewFull = false;
   timeViewList = [];
   taskList = [];
-  constructor(private element: ElementRef, private dateHelper: DateHelperService, private cd: ChangeDetectorRef) {
+  @Output() readonly nzSelectChange: EventEmitter<Date> = new EventEmitter();
+  constructor(private element: ElementRef,
+              private dateHelper: DateHelperService,
+              private cd: ChangeDetectorRef,
+              private http: HttpClient) {
     super();
   }
 
@@ -57,6 +62,10 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
     // this.setUpDateMatrix(true);
     this.calculateActiveDate();
     this.setTimeViewData();
+    this.initData();
+  }
+  public initData() {
+    this.getTaskData();
   }
   setTimeViewData() {
     for (let i = 0; i < 24; i++) {
@@ -74,20 +83,58 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
       }
     }*/
     // title: `上午 0${i} -- 吃早餐`,
-    for (let i = 1; i < 5; i++) {
-      const date = 17 + i;
-      const tasks = [];
-      for (let j = 0; j < 3; j++) {
-        tasks.push({title: `上午 0${i} -- 吃早餐`});
+
+  }
+  getTaskData() {
+    // for (let i = 1; i < 5; i++) {
+    //   const date = 17 + i;
+    //   const tasks = [];
+    //   for (let j = 0; j < 3; j++) {
+    //     tasks.push({title: `上午 0${i} -- 吃早餐`});
+    //   }
+    //   this.taskList.push({tasks, date});
+    // }
+
+    // this.http.get('/api_note/v1/query_note_view', {
+    //   params: {
+    //     query_type: '2',
+    //     page_size: '1000',
+    //     page_num: '1',
+    //     start_time: formatDate(addDays(this.activeDate, -2), 'yyyy-MM-dd', 'zh_CN'),
+    //     end_time: formatDate(addDays(this.activeDate, -2), 'yyyy-MM-dd', 'zh_CN')
+    //   }
+    // }).subscribe((res: any) => {
+    //   if (res.results) {
+    //     const tasks = res.results.note_data_list;
+    //     this.taskList.push({tasks, date});
+    //   }
+    // })
+    this.taskList = [];
+    this.http.get('/api_note/v1/query_note_view', {
+      params: {
+        query_type: '2',
+        page_size: '1000',
+        page_num: '1',
+        start_time: formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'),
+        end_time: formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN')
       }
-      this.taskList.push({tasks, date});
-    }
+    }).subscribe((res: any) => {
+      if (res.results) {
+        const tasks = res.results.note_data_list;
+        this.taskList.push({tasks});
+      }
+    })
+  }
+  onDateSelect(date: Date): void {
+    this.updateDate(date);
+    this.nzSelectChange.emit(date);
+    this.getTaskData();
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
-        this.createSwipe();
+      this.createSwipe();
       console.log(this.dateMatrixList);
-    }, 0);
+    }, 100);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];

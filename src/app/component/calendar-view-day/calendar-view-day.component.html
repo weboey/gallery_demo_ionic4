@@ -44,7 +44,8 @@
               </div>-->
               <div class="auto-content">
                 <div class="time-desc" (click)="doCalendarDayViewSize()">
-                  <span>{{activeDate | date: 'MM-dd'}} {{taskItem.date}} <span class="back-cur-day" style="float: right">今</span></span>
+                  <span>{{activeDate | date: 'MM-dd'}}</span>
+                  <!-- {{taskItem.date}} <span class="back-cur-day" style="float: right">今</span>-->
                 </div>
                 <ul class="time-box">
                   <li *ngFor="let time of timeViewList; index as row" class="time-item">
@@ -54,7 +55,7 @@
                         {{ task.title }}
                       </li>
                     </ul>-->
-                    <app-calendar-view-task [items]="taskItem.tasks"></app-calendar-view-task>
+                    <app-calendar-view-task [items]="taskItem.tasks | filterTask: time"></app-calendar-view-task>
                   </li>
                 </ul>
               </div>

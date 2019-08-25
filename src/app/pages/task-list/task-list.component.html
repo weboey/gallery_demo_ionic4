@@ -38,7 +38,7 @@
     <div *ngIf="queryView" [@myInsertRemoveTrigger] class="query-date-container">
       <div class="title">仅支持查询一年内的记录</div>
       <div class="query-date-box">
-        <ion-datetime [value]="'2019-07-14'"
+        <ion-datetime [(value)]="startTime"
                       min="2018-07-14"
                       max="2020-07-14"
                       cancelText="取消"
@@ -46,7 +46,7 @@
                       displayFormat="YYYY-MM-DD"
                       placeholder="Select Date"></ion-datetime>
         <span> > 至 > </span>
-        <ion-datetime [value]="'2019-07-14'"
+        <ion-datetime [(value)]="endTime"
                       min="2018-07-14"
                       max="2020-07-14"
                       cancelText="取消"
@@ -56,7 +56,7 @@
         </ion-datetime>
       </div>
       <div class="btn-box">
-        <ion-button color="secondary" size="small">查询</ion-button>
+        <ion-button color="secondary" size="small" (tap)="queryTaskHandle()">查询</ion-button>
       </div>
     </div>
   </div>

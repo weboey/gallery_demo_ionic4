@@ -10,7 +10,7 @@ export class FileService {
   fileTransfer: FileTransferObject = this.transfer.create();
   upload(fileUrl) {
     // const url = this.settings.system_url + '/api_article/v1/first_page/upImage/';
-    const url = 'http://192.168.16.188:7070/api_note/v1/upload_wav';
+    const url = 'http://47.112.218.7:81/api_note/v1/upload_wav';
     const filename = this.createFileName(); //定义上传后的文件名
     const options: FileUploadOptions = {
       fileKey: "file",

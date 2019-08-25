@@ -1,0 +1,18 @@
+.date-bar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  ion-icon{
+    color: #999;
+  }
+}
+
+.footer-btn{
+  display: flex;
+  height: 42px;
+  background-color: #f2f3f4;
+  button{
+    flex: 1;
+    text-align: center;
+  }
+}

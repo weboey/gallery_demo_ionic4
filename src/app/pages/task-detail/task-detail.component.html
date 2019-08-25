@@ -4,11 +4,26 @@
       <ion-back-button color="danger"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      详情
+      {{isEdit ? '编辑' : '详情'}}
     </ion-title>
+    <div *ngIf="isEdit" slot="end" style="padding-right: 12px" (click)="saveTaskHandler()">保存</div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <h2>21412</h2>
+<ion-content padding>
+  <div class="date-bar">
+    <div (tap)="openSelectDateModal()">{{ taskItem.tip_time }}</div>
+    <ion-icon name="arrow-dropright-circle"></ion-icon>
+  </div>
+
+  <ion-textarea #textInputEl placeholder="点击输入文字或语音..." [(ngModel)]="taskItem.title" [readonly]="!isEdit"></ion-textarea>
+
+
 </ion-content>
+
+<ion-footer *ngIf="!isEdit">
+  <div class="footer-btn">
+    <button>删除</button>
+    <button (click)="doEdit()">编辑</button>
+  </div>
+</ion-footer>

@@ -6,15 +6,16 @@
     <ion-title>
       新增
     </ion-title>
-    <div slot="end" style="padding-right: 12px">保存</div>
+    <ion-button slot="end" style="padding-right: 12px" (click)="saveTaskHandler()"  [disabled]="!content" color="light">保存</ion-button>
+    <!--<ion-buttons slot="end" (click)="saveTaskHandler()" [disabled]="!content">保存</ion-buttons>-->
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
   <div class="date-bar">
-    <div (tap)="openSelectDateModal()">17:55</div>
+    <div (tap)="openSelectDateModal()">{{curTime}}</div>
     <ion-icon name="arrow-dropright-circle"></ion-icon>
   </div>
 
-  <ion-textarea placeholder="点击输入文字或语音..."></ion-textarea>
+  <ion-textarea placeholder="点击输入文字或语音..." [(ngModel)]="content"></ion-textarea>
 </ion-content>

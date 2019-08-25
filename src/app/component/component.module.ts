@@ -8,6 +8,7 @@ import { TaskListViewContainerComponent } from './task-list-view-container/task-
 import {IonicModule} from "@ionic/angular";
 import {TaskListGroupComponent} from "./task-list-group/task-list-group.component";
 import {FormsModule} from "@angular/forms";
+import {PipesModule} from "../pipes/pipes.module";
 
 @NgModule({
   declarations: [
@@ -19,8 +20,9 @@ import {FormsModule} from "@angular/forms";
       TaskListViewContainerComponent
   ],
   imports: [
-      FormsModule,
+    FormsModule,
     IonicModule.forRoot(),
+    PipesModule,
     CommonModule
   ],
   exports: [

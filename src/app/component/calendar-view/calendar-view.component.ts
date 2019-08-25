@@ -1,5 +1,15 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import { startOfWeek } from 'date-fns';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
+import {addMonths, startOfWeek} from 'date-fns';
 import { addDays } from 'date-fns';
 // import { fnsFormat } from 'date-fns';
 
@@ -41,8 +51,15 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   minPoint = 0;
   private currentDate = new Date();
   @ViewChild('panel') panel: ElementRef;
+  @Output() dateChange: EventEmitter = new EventEmitter();
+  @Output() nzSelectChange: EventEmitter = new EventEmitter();
   constructor(private element: ElementRef, private dateHelper: DateHelperService) { }
-
+  onDateSelect(date: Date): void {
+    console.log(date);
+    console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
+    this.nzSelectChange.emit(date);
+    this.updateDate(date);
+  }
   ngOnInit() {
     this.setUpDaysInWeek();
     this.setMulMonthDateMatrix();
@@ -52,10 +69,10 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     console.log(this.activeDate);
-    this.createSwipe();
     setTimeout(() => {
+      this.createSwipe();
       console.log(this.dateMatrixList);
-    }, 2000);
+    }, 200);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -70,6 +87,8 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     }
   }
   createSwipe() {
+    console.log('初始化显示第几个');
+    console.log(this.maxPoint/ 2);
     this.swiper = new Swiper(this.panel.nativeElement, {
       initialSlide: this.maxPoint / 2, // 初始化显示第几个
       zoom: {
@@ -124,20 +143,21 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       }
       // this.swiper.appendSlide('<div class="swiper-slide">这是一个新的slide</div>');
       // this.swiper.updateSlides();
+      this.currentDate = addMonths(this.currentDate, 1)
     } else {
       if (Math.abs(this.minPoint - i) <= 4) {
         this.monthChangeHandler(this.minPoint - 1);
         this.maxPoint --;
       }
+      this.currentDate = addMonths(this.currentDate, -1)
     }
     setTimeout( () => {
       this.swiper.update();
     }, 100);
     console.log(this.dateMatrixList);
-    console.log(this.swiper);
-    console.log(this.swiper.refresh);
-    console.log(this.swiper.update);
-    console.log(this.swiper.updateSlides);
+
+    console.log(formatDate(this.currentDate, 'yyyy-MM-dd', 'zh_CN'));
+    this.dateChange.emit(this.currentDate);
     // swiper.appendSlide([
     //   '<div class="swiper-slide">Slide ' + (++appendNumber) + '</div>',
     //   '<div class="swiper-slide">Slide ' + (++appendNumber) + '</div>'
