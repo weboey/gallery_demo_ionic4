@@ -51,8 +51,8 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   minPoint = 0;
   private currentDate = new Date();
   @ViewChild('panel') panel: ElementRef;
-  @Output() dateChange: EventEmitter = new EventEmitter();
-  @Output() nzSelectChange: EventEmitter = new EventEmitter();
+  @Output() dateChange: EventEmitter<any> = new EventEmitter<any>();
+  @Output() nzSelectChange: EventEmitter<any> = new EventEmitter<any>();
   constructor(private element: ElementRef, private dateHelper: DateHelperService) { }
   onDateSelect(date: Date): void {
     console.log(date);

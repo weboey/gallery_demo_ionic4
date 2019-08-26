@@ -11,7 +11,7 @@
           <span class="ant-fullcalendar-column-header-inner">{{ day.label }}</span>
         </li>
       </ul>
-      <div class="calendar-body" [class.calendar-day-full-size]="isDayViewFull">
+      <div class="calendar-body">
         <ng-container *ngFor="let dateMatrixItem of dateMatrixList;  index as row">
           <ul class="time-box" [class.ant-fullcalendar-active-week]="row === activeDateRow">
             <li>

@@ -9,13 +9,13 @@ import {ToastController} from "@ionic/angular";
   styleUrls: ['./task-detail.component.scss']
 })
 export class TaskDetailComponent implements OnInit {
-  taskItem = {};
+  taskItem = <any>{};
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
               public toastController: ToastController) { }
   isEdit = false;
   @ViewChild('textInputEl') textInputEl: any;
   ngOnInit() {
-    this.activatedRoute.queryParamMap.subscribe(q => {
+    this.activatedRoute.queryParamMap.subscribe((q: any) => {
       console.log(q.params);
       this.taskItem = q.params;
     })

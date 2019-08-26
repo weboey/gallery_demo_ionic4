@@ -28,7 +28,8 @@ import {ComponentModule} from "./component/component.module";
 import {PipesModule} from "./pipes/pipes.module";
 
 registerLocaleData(zh);
-
+// 拦截器配置
+import { httpInterceptorProviders } from './http-interceptors';
 @NgModule({
   declarations: [
     AppComponent,
@@ -59,6 +60,7 @@ registerLocaleData(zh);
     Media,
     File,
     FileTransfer,
+    httpInterceptorProviders,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {
       provide: NZ_DATE_CONFIG, useValue: {

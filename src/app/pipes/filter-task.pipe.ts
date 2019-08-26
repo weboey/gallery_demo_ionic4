@@ -4,10 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'filterTask'
 })
 export class FilterTaskPipe implements PipeTransform {
-
   transform(value: any, args?: any): any {
-    console.log(value);
-    console.log(args);
     const argsH = args.split(':')[0];
     const argsM = args.split(':')[1];
     return value.filter(item => {
@@ -18,5 +15,4 @@ export class FilterTaskPipe implements PipeTransform {
       }
     });
   }
-
 }

@@ -43,6 +43,6 @@ export class FileService {
   createFileName() {
     const d = new Date();
     const n = d.getTime();
-    return n + ".jpg"; //拼接文件名
+    return n + ".mp3"; //拼接文件名
   }
 }

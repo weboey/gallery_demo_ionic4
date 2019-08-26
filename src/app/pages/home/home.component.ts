@@ -82,7 +82,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       console.log('结束录音');
       this.isAudioRecording = false;
-    }, 700);
+    }, 500);
   }
   ionViewWillEnter() {
 
@@ -90,6 +90,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ionViewDidEnter() {
     console.log('进入首页');
     this.CalendarViewDayComponent && this.CalendarViewDayComponent.initData();
+    this.isAudioRecording = false;
+    this.audioFile = null;
+    this.isAudioRecording = false;
+    this.isStopRecord = false;
+    this.fileName = '';
   }
   ionViewWillLeave() {
 
@@ -118,16 +123,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   stopRecordSound() {
-    console.log('??????');
     if (!this.isStopRecord) {
       this.audioFile && this.audioFile.stopRecord();
       this.isAudioRecording = false;
       setTimeout(()=>{
-        this.enterCreateTaskPage(this.fileName)
+        this.enterCreateTaskPage(`${this.fileName}.mp3`)
       }, 0)
     }
   }
-
   enterCreateTaskPage(fileName?: string) {
     this.isAudioRecording = false;
     this.router.navigate(['/task-create'], {queryParams: {fileName}})
