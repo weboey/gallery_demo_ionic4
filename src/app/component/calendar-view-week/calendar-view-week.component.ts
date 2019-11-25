@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {
+  AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { startOfWeek } from 'date-fns';
 import { addDays } from 'date-fns';
 // import { fnsFormat } from 'date-fns';
@@ -18,6 +21,7 @@ declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view-week',
   templateUrl: './calendar-view-week.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./calendar-view-week.component.scss']
 })
 export class CalendarViewWeekComponent implements OnInit, AfterViewInit {

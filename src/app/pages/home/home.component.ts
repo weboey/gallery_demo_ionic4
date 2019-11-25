@@ -123,12 +123,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   stopRecordSound() {
-    if (!this.isStopRecord) {
+    if (!this.isStopRecord && this.isAudioRecording) {
       this.audioFile && this.audioFile.stopRecord();
       this.isAudioRecording = false;
       setTimeout(()=>{
         this.enterCreateTaskPage(`${this.fileName}.mp3`)
-      }, 0)
+      }, 50)
     }
   }
   enterCreateTaskPage(fileName?: string) {

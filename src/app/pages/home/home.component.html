@@ -23,12 +23,11 @@
 </ion-header>
 
 <ion-content [scrollY]="false">
-
   <ng-container [ngSwitch]="viewMode">
     <ng-container *ngSwitchCase="'month'" [ngTemplateOutlet]="monthModeTable"></ng-container>
-    <ng-container *ngSwitchCase="'week'" [ngTemplateOutlet]="weekModeTable"></ng-container>
-    <ng-container *ngSwitchCase="'day'" [ngTemplateOutlet]="dayModeTable"></ng-container>
-    <ng-container *ngSwitchCase="'list'" [ngTemplateOutlet]="listModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'week'"  [ngTemplateOutlet]="weekModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'day'"   [ngTemplateOutlet]="dayModeTable"></ng-container>
+    <ng-container *ngSwitchCase="'list'"  [ngTemplateOutlet]="listModeTable"></ng-container>
   </ng-container>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'list' !== viewMode">
@@ -47,9 +46,7 @@
       <p>{{audioText}}</p>
     </div>
   </ng-container>
-
 </ion-content>
-
 
 <ng-template #monthModeTable>
   <app-calendar-view (dateChange)="monthDateChangeHandler($event)"></app-calendar-view>
@@ -60,7 +57,6 @@
 <ng-template #dayModeTable>
   <app-calendar-view-day></app-calendar-view-day>
 </ng-template>
-
 <ng-template #listModeTable>
   <app-task-list-view-container></app-task-list-view-container>
 </ng-template>
