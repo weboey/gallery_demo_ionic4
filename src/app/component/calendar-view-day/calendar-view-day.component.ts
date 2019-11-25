@@ -77,15 +77,6 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
         this.timeViewList.push(`${i}:00`);
       }
     }
-    /*for (let i = 1; i < 12; i++) {
-      if (i < 10 ) {
-        this.timeViewList.push(`上午 0${i}:00`);
-      } else {
-        this.timeViewList.push(`下午 ${i}:00`);
-      }
-    }*/
-    // title: `上午 0${i} -- 吃早餐`,
-
   }
   getTaskData() {
     // for (let i = 1; i < 5; i++) {
@@ -111,7 +102,6 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
     //     this.taskList.push({tasks, date});
     //   }
     // })
-    this.taskList = [];
     this.http.get('/api_note/v1/query_note_view', {
       params: {
         query_type: '2',
@@ -122,8 +112,13 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
       }
     }).subscribe((res: any) => {
       if (res.results) {
-        const tasks = res.results.note_data_list;
-        this.taskList.push({tasks});
+        this.taskList = [{}, {}, {}];
+        this.taskList[0]['tasks'] = res.results.note_data_list;
+        this.taskList[1]['tasks'] = res.results.note_data_list;
+        this.taskList[2]['tasks'] = res.results.note_data_list;
+        console.log('我的任务');
+        console.log(this.taskList);
+        this.cd.detectChanges();
       }
     })
   }
@@ -136,7 +131,8 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
     setTimeout(() => {
       this.createSwipe();
       console.log(this.dateMatrixList);
-    }, 100);
+      console.log(this.taskList);
+    }, 300);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -152,8 +148,8 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
     }
   }
   createSwipe() {
-      console.log('?????????????');
-      console.log(Swiper);
+    console.log('?????????????');
+    console.log(Swiper);
     this.swiper = new Swiper(this.panel.nativeElement, {
       initialSlide: 2, // 初始化显示第几个
       zoom: {

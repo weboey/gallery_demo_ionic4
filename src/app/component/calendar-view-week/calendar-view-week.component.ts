@@ -54,20 +54,27 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
     this.setTimeViewData();
   }
   setTimeViewData() {
-    for (let i = 1; i < 12; i++) {
+    for (let i = 0; i < 24; i++) {
       if (i < 10 ) {
-        this.timeViewList.push(`上午 0${i}:00`);
+        this.timeViewList.push(`0${i}:00`);
       } else {
-        this.timeViewList.push(`下午 ${i}:00`);
+        this.timeViewList.push(`${i}:00`);
       }
     }
-    for (let i = 1; i < 12; i++) {
-      if (i < 10 ) {
-        this.timeViewList.push(`上午 0${i}:00`);
-      } else {
-        this.timeViewList.push(`下午 ${i}:00`);
-      }
-    }
+    // for (let i = 1; i < 12; i++) {
+    //   if (i < 10 ) {
+    //     this.timeViewList.push(`上午 0${i}:00`);
+    //   } else {
+    //     this.timeViewList.push(`下午 ${i}:00`);
+    //   }
+    // }
+    // for (let i = 1; i < 12; i++) {
+    //   if (i < 10 ) {
+    //     this.timeViewList.push(`上午 0${i}:00`);
+    //   } else {
+    //     this.timeViewList.push(`下午 ${i}:00`);
+    //   }
+    // }
   }
   ngAfterViewInit(): void {
     console.log(this.activeDate);

@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ToastController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-task-list-group',
@@ -10,6 +11,7 @@ import {ToastController} from "@ionic/angular";
 export class TaskListGroupComponent implements OnInit {
 
   constructor(private http: HttpClient, private cd: ChangeDetectorRef,
+              private router: Router,
               public toastController: ToastController) { }
   @Input() items = [];
   ngOnInit() {
@@ -43,6 +45,12 @@ export class TaskListGroupComponent implements OnInit {
         this.items = this.items.filter(taskItem => item.id != taskItem.id);
         // this.cd.detectChanges();
       }
+    })
+  }
+
+  editItem(task) {
+    this.router.navigate(['/task-detail'], {
+      queryParams: task
     })
   }
 }

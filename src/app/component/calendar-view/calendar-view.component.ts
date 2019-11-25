@@ -48,7 +48,7 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   activeDateCol = -1;
   activeMonthRow = -1;
   activeMonthCol = -1;
-  maxPoint = 12;
+  maxPoint = 6;
   minPoint = 0;
   private currentDate = new Date();
   @ViewChild('panel') panel: ElementRef;
@@ -156,7 +156,6 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       this.swiper.update();
     }, 100);
     console.log(this.dateMatrixList);
-
     console.log(formatDate(this.currentDate, 'yyyy-MM-dd', 'zh_CN'));
     this.dateChange.emit(this.currentDate);
     // swiper.appendSlide([

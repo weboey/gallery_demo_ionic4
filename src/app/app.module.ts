@@ -64,7 +64,7 @@ import { httpInterceptorProviders } from './http-interceptors';
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {
       provide: NZ_DATE_CONFIG, useValue: {
-        firstDayOfWeek: 0
+        firstDayOfWeek: 1
       }
     }
   ],

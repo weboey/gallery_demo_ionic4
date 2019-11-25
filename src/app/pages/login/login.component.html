@@ -12,7 +12,7 @@
         <ion-icon name="person-add"></ion-icon>
       </ion-col>
       <ion-col>
-        <ion-input [placeholder]="'手机号码'"></ion-input>
+        <ion-input [placeholder]="'手机号码'" [(ngModel)]="user.phone"  (input)="checkBtnStatus()"></ion-input>
       </ion-col>
     </ion-row>
 
@@ -21,10 +21,11 @@
         <ion-icon name="nuclear"></ion-icon>
       </ion-col>
       <ion-col>
-        <ion-input [placeholder]="'登陆密码'"></ion-input>
+        <ion-input [placeholder]="'登陆密码'" [type]="passwordType" [(ngModel)]="user.pwd"  (input)="checkBtnStatus()"
+                   #pwdInput></ion-input>
       </ion-col>
       <ion-col [size]="2">
-        <ion-toggle color="secondary"></ion-toggle>
+        <ion-toggle color="secondary" (ionChange)="switchPasswordInputType(pwdInput)"></ion-toggle>
       </ion-col>
     </ion-row>
 
@@ -36,7 +37,7 @@
 
     <ion-row align-items-end justify-content-end>
       <ion-col>
-        <ion-button style="width: 100%;" [color]="'secondary'">登陆</ion-button>
+        <ion-button style="width: 100%;" [color]="'secondary'" (click)="submitLogin()" [disabled]="btnStatus">登陆</ion-button>
       </ion-col>
     </ion-row>
 
