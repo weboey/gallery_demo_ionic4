@@ -3,7 +3,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { startOfWeek } from 'date-fns';
+import {addMonths, startOfWeek} from 'date-fns';
 import { addDays } from 'date-fns';
 // import { fnsFormat } from 'date-fns';
 import {DateHelperService} from "../../services/date-helper.service";
@@ -21,6 +21,7 @@ import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
 import {CalendarBase} from "../calendar-base/calendar-base";
 import {HttpClient} from "@angular/common/http";
+import {forkJoin} from "rxjs/index";
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view-day',
@@ -49,6 +50,8 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
   private isDayViewFull = false;
   timeViewList = [];
   taskList = [];
+  maxPoint = 2;
+  minPoint = 0;
   @Output() readonly nzSelectChange: EventEmitter<Date> = new EventEmitter();
   constructor(private element: ElementRef,
               private dateHelper: DateHelperService,
@@ -58,6 +61,7 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
   }
 
   ngOnInit() {
+    console.error('????????????????');
     this.setUpDaysInWeek();
     this.setMulMonthDateMatrix();
     // this.activeDate = this.currentDate;
@@ -78,46 +82,76 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
       }
     }
   }
-  getTaskData() {
-    // for (let i = 1; i < 5; i++) {
-    //   const date = 17 + i;
-    //   const tasks = [];
-    //   for (let j = 0; j < 3; j++) {
-    //     tasks.push({title: `上午 0${i} -- 吃早餐`});
-    //   }
-    //   this.taskList.push({tasks, date});
-    // }
-
-    // this.http.get('/api_note/v1/query_note_view', {
-    //   params: {
-    //     query_type: '2',
-    //     page_size: '1000',
-    //     page_num: '1',
-    //     start_time: formatDate(addDays(this.activeDate, -2), 'yyyy-MM-dd', 'zh_CN'),
-    //     end_time: formatDate(addDays(this.activeDate, -2), 'yyyy-MM-dd', 'zh_CN')
-    //   }
-    // }).subscribe((res: any) => {
-    //   if (res.results) {
-    //     const tasks = res.results.note_data_list;
-    //     this.taskList.push({tasks, date});
-    //   }
-    // })
+  getTaskData(curDate = this.activeDate) {
+    const curData$D1 = this.http.get('/api_note/v1/query_note_view', {
+      params: {
+        query_type: '2',
+        page_size: '1000',
+        page_num: '1',
+        start_time: formatDate(addDays(curDate, -1), 'yyyy-MM-dd', 'zh_CN'),
+        end_time: formatDate(addDays(curDate, -1), 'yyyy-MM-dd', 'zh_CN')
+      }
+    });
+    const curData$ = this.http.get('/api_note/v1/query_note_view', {
+      params: {
+        query_type: '2',
+        page_size: '1000',
+        page_num: '1',
+        start_time: formatDate(curDate, 'yyyy-MM-dd', 'zh_CN'),
+        end_time: formatDate(curDate, 'yyyy-MM-dd', 'zh_CN')
+      }
+    });
+    const curData$A1 = this.http.get('/api_note/v1/query_note_view', {
+      params: {
+        query_type: '2',
+        page_size: '1000',
+        page_num: '1',
+        start_time: formatDate(addDays(curDate, 1), 'yyyy-MM-dd', 'zh_CN'),
+        end_time: formatDate(addDays(curDate, 1), 'yyyy-MM-dd', 'zh_CN')
+      }
+    });
+    forkJoin(curData$D1, curData$, curData$A1).subscribe((res: any) => {
+      if (res) {
+        this.taskList = [
+          {date: addDays(curDate, -1).getTime()},
+          {date: curDate.getTime()},
+          {date: addDays(curDate, 1).getTime()}
+        ];
+        this.taskList[0]['tasks'] = res[0].results.note_data_list;
+        this.taskList[1]['tasks'] = res[1].results.note_data_list;
+        this.taskList[2]['tasks'] = res[2].results.note_data_list;
+        console.log('我的任务');
+        console.log(this.taskList);
+        this.cd.detectChanges();
+      }
+    })
+  }
+  getTaskDataSingle(curDate, direction) {
+    console.log(this.taskList);
+    if(this.taskList.find(item => item.date && item.date === curDate.getTime())) {
+      console.error('不执行请求');
+      return;
+    }
+    if(direction) {
+      this.taskList.push({tasks: [], date: curDate.getTime()});
+    } else {
+      this.taskList.unshift({tasks: [], date: curDate.getTime()});
+    }
     this.http.get('/api_note/v1/query_note_view', {
       params: {
         query_type: '2',
         page_size: '1000',
         page_num: '1',
-        start_time: formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'),
-        end_time: formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN')
+        start_time: formatDate(curDate, 'yyyy-MM-dd', 'zh_CN'),
+        end_time: formatDate(curDate, 'yyyy-MM-dd', 'zh_CN')
       }
     }).subscribe((res: any) => {
-      if (res.results) {
-        this.taskList = [{}, {}, {}];
-        this.taskList[0]['tasks'] = res.results.note_data_list;
-        this.taskList[1]['tasks'] = res.results.note_data_list;
-        this.taskList[2]['tasks'] = res.results.note_data_list;
-        console.log('我的任务');
-        console.log(this.taskList);
+      if (res) {
+        if(direction) {
+          this.taskList[this.taskList.length-1]['tasks'] = res.results.note_data_list;
+        } else {
+          this.taskList[0]['tasks'] = res.results.note_data_list;
+        }
         this.cd.detectChanges();
       }
     })
@@ -151,7 +185,7 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
     console.log('?????????????');
     console.log(Swiper);
     this.swiper = new Swiper(this.panel.nativeElement, {
-      initialSlide: 2, // 初始化显示第几个
+      initialSlide: this.maxPoint / 2, // 初始化显示第几个
       zoom: {
         maxRatio: 4,
         toggle: false,
@@ -167,19 +201,52 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
         slideChange: () => {
           console.log(this.swiper);
           if(this.swiper.initialized) {
-            if(this.swiper.swipeDirection === 'prev') {
-                this.activeDate = addDays(this.activeDate, -1);
-            } else {
-                this.activeDate = addDays(this.activeDate, 1);
-            }
-            console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
-            this.calculateActiveDate();
-            this.cd.detectChanges();
+            this.renderMonthDateMatrix(this.swiper.activeIndex);
           }
         }
       }
     });
   }
+  private renderMonthDateMatrix(index) {
+    if (typeof index === 'undefined') {
+      return;
+    }
+    const i = index - this.maxPoint / 2;
+    const curDay = this.activeDate.getDay();
+    console.log(curDay);
+    console.log(i);
+    console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
+    // if (i > 0) {
+    //   if (Math.abs(this.maxPoint - i) <= 4) {
+    //     this.maxPoint ++;
+    //   }
+    //
+    // } else {
+    //   if (Math.abs(this.minPoint - i) <= 4) {
+    //     this.maxPoint --;
+    //   }
+    // }
+    if(this.swiper.swipeDirection === 'prev') {
+      console.log('向左滑....');
+      this.activeDate = addDays(this.activeDate, -1);
+      const activeDatePre = addDays(this.activeDate, -1);
+      this.getTaskDataSingle(activeDatePre, -1);
+      this.maxPoint --;
+    } else {
+      this.maxPoint ++;
+      console.log('向右滑....');
+      this.activeDate = addDays(this.activeDate, 1);
+      const activeDateNext = addDays(this.activeDate, 1);
+      this.getTaskDataSingle(activeDateNext, 1)
+    }
+    console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
+    this.calculateActiveDate();
+    this.cd.detectChanges();
+    setTimeout( () => {
+      this.swiper.update();
+    }, 100);
+  }
+
   private get calendarStart(): Date {
     return startOfWeek(startOfMonth(this.activeDate), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });
   }

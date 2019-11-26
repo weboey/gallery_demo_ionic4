@@ -7,7 +7,6 @@ export class FilterTaskPipe implements PipeTransform {
   transform(value: any, args?: any): any {
     const argsH = args.split(':')[0];
     const argsM = args.split(':')[1];
-    console.log(value);
     return value.filter(item => {
       let h = item.tip_time.split(' ')[1].split(':')[0];
       let m = item.tip_time.split(' ')[1].split(':')[1];

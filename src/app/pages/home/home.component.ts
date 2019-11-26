@@ -62,7 +62,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   openRecordSound2() {
     console.log('开始录音');
-
     this.isAudioRecording = true;
     // this.file.createFile(this.file.externalRootDirectory, 'my_file.mp3', true).then(() => {
     //     let file = this.media.create(this.file.externalRootDirectory + 'my_file.m4a');
@@ -89,7 +88,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   ionViewDidEnter() {
     console.log('进入首页');
-    this.CalendarViewDayComponent && this.CalendarViewDayComponent.initData();
+    // this.CalendarViewDayComponent && this.CalendarViewDayComponent.initData();
     this.isAudioRecording = false;
     this.audioFile = null;
     this.isAudioRecording = false;

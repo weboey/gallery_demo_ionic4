@@ -82,7 +82,7 @@ export class TaskCreateComponent implements OnInit {
             toast.present();
             setTimeout(() => {
                 this.nav.goBack();
-                this.nav.goBack();
+                // this.nav.goBack();
             }, 100)
         })
     }
