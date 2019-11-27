@@ -23,7 +23,7 @@ import {CalendarViewDayComponent} from "../../component/calendar-view-day/calend
   ]
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  viewMode = 'list';
+  viewMode = 'day';
   audioText = '手指上划取消录音';
   curDate = new Date();
   constructor(private media: Media, private file: File, private router: Router,

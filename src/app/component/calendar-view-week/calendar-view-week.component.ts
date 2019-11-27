@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, TemplateRef,
+  AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnInit, TemplateRef,
   ViewChild
 } from '@angular/core';
 import { startOfWeek } from 'date-fns';
@@ -17,6 +17,8 @@ import { isThisMonth } from 'date-fns';
 import { isSameYear } from 'date-fns';
 import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
+import {forkJoin} from "rxjs/index";
+import {HttpClient} from "@angular/common/http";
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view-week',
@@ -42,8 +44,12 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   activeMonthRow = -1;
   activeMonthCol = -1;
   private currentDate = new Date();
+  maxPoint = 0;
+  curPoint = 0;
   @ViewChild('panel') panel: ElementRef;
-  constructor(private element: ElementRef, private dateHelper: DateHelperService) { }
+  constructor(private element: ElementRef, private dateHelper: DateHelperService,
+              private cd: ChangeDetectorRef,
+              private http: HttpClient) { }
 
   ngOnInit() {
     this.setUpDaysInWeek();
@@ -77,11 +83,12 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
     // }
   }
   ngAfterViewInit(): void {
-    console.log(this.activeDate);
-    this.createSwipe();
     setTimeout(() => {
+      this.createSwipe();
+      this.getTaskData();
+      console.log('当前视图的日历数据...');
       console.log(this.dateMatrixList);
-    }, 2000);
+    }, 300);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -99,7 +106,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
     console.log('?????????????');
     console.log(Swiper);
     this.swiper = new Swiper(this.panel.nativeElement, {
-      initialSlide: 2, // 初始化显示第几个
+      initialSlide: this.curPoint, // 初始化显示第几个
       zoom: {
         maxRatio: 4,
         toggle: false,
@@ -119,36 +126,41 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
         //   }
         // }
       },
-      // virtual: {
-      //   slides: this.dateMatrixList,
-      //   // renderSlide: (slide, index) => {
-      //   //   return '<div class="swiper-slide">索引是' + index + '+内容是' + slide + '</div>';
-      //   // }
-      //   renderExternal(data) {
-      //     // assign virtual slides data
-      //     this.virtualData = data;
-      //     console.log('??????????');
-      //     console.log(data);
-      //   }
-      // }
     });
+  }
+  getTaskData() {
+    this.http.get('/api_note/v1/query_note_view', {
+      params: {
+        query_type: '4'
+      }
+    }).subscribe((res: any) => {
+      if (res) {
+        this.dateMatrixList.forEach(weekItem => {
+          weekItem.tasks = res.results.note_data_list;
+          this.cd.detectChanges();
+        });
+      }
+    })
   }
   private get calendarStart(): Date {
     return startOfWeek(startOfMonth(this.activeDate), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });
   }
   private setMulMonthDateMatrix() {
     const curMonth = this.activeDate.getMonth();
+    this.monthChangeHandler(curMonth);
     for (let i = 1; i < 5; i++) {
-      this.monthChangeHandler(curMonth + i - 2);
+      // this.monthChangeHandler(curMonth + i - 2);
     }
   }
   private setUpDateMatrix(isTop = false): void {
-    const dateMatrix = [];
+    console.error(this.activeDate);
     const monthStart = startOfMonth(this.activeDate);
     const monthEnd = endOfMonth(this.activeDate);
     const weekDiff =
       differenceInCalendarWeeks(monthEnd, monthStart, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() }) + 2;
-    for (let week = 0; week < 1; week++) {
+    this.maxPoint = weekDiff;
+    for (let week = 0; week < weekDiff; week++) {
+      const dateMatrix = [];
       const row: DateCellContext[] = [];
       const weekStart = addDays(this.calendarStart, week * 7);
       for (let day = 0; day < 7; day++) {
@@ -158,39 +170,22 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
         const title = this.dateHelper.format(date, dateFormat);
         const label = this.dateHelper.format(date, this.dateHelper.relyOnDatePipe ? 'dd' : 'DD');
         const rel = monthDiff === 0 ? 'current' : monthDiff < 0 ? 'last' : 'next';
+        if(date.getDate() === this.activeDate.getDate()) {
+          this.curPoint = week;
+          console.log('找到了');
+          console.log(this.curPoint);
+        }
         row.push({ title, label, rel, value: date });
       }
       dateMatrix.push(row);
-    }
-    if (isTop) {
-      this.dateMatrixList.unshift(dateMatrix);
-    } else {
+      dateMatrix['tasks'] = [];
       this.dateMatrixList.push(dateMatrix);
     }
-  }
-  private setMonthDateMatrix(monthDate) {
-    const dateMatrix = [];
-    const monthStart = startOfMonth(monthDate);
-    const monthEnd = endOfMonth(monthDate);
-    const weekDiff =
-      differenceInCalendarWeeks(monthEnd, monthStart, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() }) + 2;
-
-    for (let week = 0; week < weekDiff; week++) {
-      const row: DateCellContext[] = [];
-      const weekStart = addDays(this.calendarStart, week * 7);
-      for (let day = 0; day < 7; day++) {
-        const date = addDays(weekStart, day);
-        const monthDiff = differenceInCalendarMonths(date, monthDate);
-        const dateFormat = 'longDate';
-        const title = this.dateHelper.format(date, dateFormat);
-        const label = this.dateHelper.format(date, this.dateHelper.relyOnDatePipe ? 'dd' : 'DD');
-        const rel = monthDiff === 0 ? 'current' : monthDiff < 0 ? 'last' : 'next';
-        row.push({ title, label, rel, value: date });
-      }
-      dateMatrix.push(row);
-    }
-    this.dateMatrixList.push(dateMatrix);
-    return  dateMatrix;
+    // if (isTop) {
+    //   this.dateMatrixList.unshift(dateMatrix);
+    // } else {
+    //   this.dateMatrixList.push(dateMatrix);
+    // }
   }
   private calculateActiveDate(): void {
     this.activeDateRow = differenceInCalendarWeeks(this.activeDate, this.calendarStart, {
@@ -219,6 +214,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   monthChangeHandler(month: number) {
     console.log(`计算第${month}的数据`);
     const date = setMonth(this.activeDate, month);
+    console.log(date);
     console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
     this.updateDate(date);
   }

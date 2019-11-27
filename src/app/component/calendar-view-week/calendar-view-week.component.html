@@ -1,5 +1,3 @@
-
-
 <div class="ant-fullcalendar ant-fullcalendar-full ant-fullcalendar-fullscreen">
   <div>
     <div class="ant-fullcalendar-calendar-body">
@@ -18,18 +16,19 @@
           <div class="swiper-zoom-container">
             <div class="week-body">
               <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box">
-                <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell">
+                <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell"
+                    [class.ant-fullcalendar-today]="row === currentDateRow && col === currentDateCol"
+                    [class.my-calendar-selected-day]="row === activeDateRow && col === activeDateCol"
+                    [class.ant-fullcalendar-last-month-cell]="day.rel === 'last'"
+                    [class.ant-fullcalendar-next-month-btn-day]="day.rel === 'next'"
+                    (click)="onDateSelect(day.value)">
                   {{ day.label }}
                 </li>
               </ul>
               <ul class="time-box">
                 <li *ngFor="let time of timeViewList; index as row" class="time-item">
                   <span>{{time}}</span>
-                  <!--<ul *ngFor="let week of dateMatrixItem; index as row" class="inner-box calendar-box">
-                    <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell">
-                      {{ day.label }}
-                    </li>
-                  </ul>-->
+                  <app-calendar-view-task [items]="dateMatrixItem.tasks | filterTask: time"></app-calendar-view-task>
                 </li>
               </ul>
             </div>
