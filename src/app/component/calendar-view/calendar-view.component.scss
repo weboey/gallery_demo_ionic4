@@ -9,12 +9,17 @@
   background: initial !important;
 }
 .ant-fullcalendar-value{
-  height: 40px !important;
-  line-height: 40px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  width: 32px;
 }
+.ant-fullcalendar-content{
+  margin-top: 8px;
+}
+
 .ant-fullcalendar-fullscreen .ant-fullcalendar-date {
   display: block;
-  height: 88px;
+  height: 14vh;
   margin: 0 2px;
   padding: 4px 0;
   color: rgba(0, 0, 0, 0.65);

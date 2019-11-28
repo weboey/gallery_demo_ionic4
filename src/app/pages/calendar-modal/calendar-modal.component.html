@@ -6,7 +6,7 @@
 </ion-header>
 
 <ion-content>
-  <app-calendar-view (nzSelectChange)="monthDateChangeHandler($event)"></app-calendar-view>
+  <app-calendar-view (nzSelectChange)="monthDateChangeHandler($event)" [isLoadData]="false"></app-calendar-view>
   <ion-item>
     <ion-label><ion-icon name="time"></ion-icon>设置时间</ion-label>
     <ion-datetime displayFormat="HH:mm" cancelText="取消" [(value)]="curTime"

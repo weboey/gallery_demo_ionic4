@@ -35,5 +35,26 @@
         }
       }
     }
+    .ant-fullcalendar-last-month-cell, .ant-fullcalendar-next-month-btn-day{
+      app-calendar-view-task{
+        .task-box{
+          li{
+            color: rgba(0,0,0,.25);
+            &:nth-of-type(1){
+              background-color: rgba(#FF9966, .25) !important;
+            }
+            &:nth-of-type(2){
+              background-color: rgba(#66CCFF, .25) !important;
+            }
+            &:nth-of-type(3){
+              background-color: rgba(#33CC33, .25) !important;
+            }
+            &:nth-of-type(4){
+              background-color: rgba(#1ABC9C, .25) !important;
+            }
+          }
+        }
+      }
+    }
   }
 }

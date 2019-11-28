@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ToastController} from "@ionic/angular";
 import {Router} from "@angular/router";
@@ -14,6 +14,7 @@ export class TaskListGroupComponent implements OnInit {
               private router: Router,
               public toastController: ToastController) { }
   @Input() items = [];
+  @Output() change = new EventEmitter();
   ngOnInit() {
   }
   // public items = [
@@ -44,6 +45,7 @@ export class TaskListGroupComponent implements OnInit {
         toast.present();
         this.items = this.items.filter(taskItem => item.id != taskItem.id);
         // this.cd.detectChanges();
+        // this.change.emit(true);
       }
     })
   }

@@ -29,7 +29,7 @@
       </div>
     </div>
   </div>
-  <app-task-list-group [items]="taskList"></app-task-list-group>
+  <app-task-list-group [items]="taskList" (change)="changeHandler()"></app-task-list-group>
 </ion-content>
 
 

@@ -48,7 +48,11 @@ export class TaskListViewContainerComponent implements OnInit {
       }
     })
   }
-
+  changeHandler() {
+    setTimeout(()=>{
+      this.getInitData();
+    },500)
+  }
   loadData(event) {
     return new Promise((resolve) => {
       setTimeout(() => {

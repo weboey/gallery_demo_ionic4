@@ -35,6 +35,7 @@ declare let Swiper: any;
 })
 export class CalendarViewComponent implements OnInit, AfterViewInit {
   @Input() nzMode = 'month';
+  @Input() isLoadData = true;
   swiper: any = {isEnd: false};
   daysInWeek: DayCellContext[] = [];
   dateMatrix: DateCellContext[][] = [];
@@ -66,15 +67,24 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     this.updateDate(date);
   }
   ngOnInit() {
-    this.getTaskData();
-    setTimeout(()=>{
+    if(this.isLoadData) {
+      this.getTaskData();
+      setTimeout(()=>{
+        this.setUpDaysInWeek();
+        this.setMulMonthDateMatrix();
+        // this.activeDate = this.currentDate;
+        this.calculateActiveDate();
+        // this.setUpDateMatrix(true);
+        this.cd.detectChanges();
+      }, 80);
+    } else {
       this.setUpDaysInWeek();
       this.setMulMonthDateMatrix();
       // this.activeDate = this.currentDate;
       this.calculateActiveDate();
       // this.setUpDateMatrix(true);
       this.cd.detectChanges();
-    }, 80);
+    }
   }
   ngAfterViewInit(): void {
     console.log(this.activeDate);
@@ -97,16 +107,18 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     }
   }
   getTaskData() {
-    this.http.get('/api_note/v1/query_note_view', {
-      params: {
-        query_type: '5'
-      }
-    }).subscribe((res: any) => {
-      if (res) {
-        console.log(res);
-        this.activeMonthTasks = res.results.note_data_list;
-      }
-    })
+    if(this.isLoadData) {
+      this.http.get('/api_note/v1/query_note_view', {
+        params: {
+          query_type: '5'
+        }
+      }).subscribe((res: any) => {
+        if (res) {
+          console.log(res);
+          this.activeMonthTasks = res.results.note_data_list;
+        }
+      })
+    }
   }
 
   createSwipe() {
@@ -319,5 +331,5 @@ export interface DateCellContext {
   label: string;
   rel: 'last' | 'current' | 'next';
   value: Date;
-  tasks?: Array;
+  tasks?: Array<any>;
 }
