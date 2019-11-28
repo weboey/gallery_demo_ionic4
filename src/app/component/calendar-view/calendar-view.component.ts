@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, ChangeDetectionStrategy,
+  AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -25,6 +25,7 @@ import { isSameYear } from 'date-fns';
 import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
 import {DateHelperService} from "../../services/date-helper.service";
+import {HttpClient} from "@angular/common/http";
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view',
@@ -51,10 +52,13 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   maxPoint = 6;
   minPoint = 0;
   private currentDate = new Date();
+  activeMonthTasks = [];
   @ViewChild('panel') panel: ElementRef;
   @Output() dateChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() nzSelectChange: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private element: ElementRef, private dateHelper: DateHelperService) { }
+  constructor(private element: ElementRef, private dateHelper: DateHelperService,
+              private cd: ChangeDetectorRef,
+              private http: HttpClient) { }
   onDateSelect(date: Date): void {
     console.log(date);
     console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
@@ -62,16 +66,21 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     this.updateDate(date);
   }
   ngOnInit() {
-    this.setUpDaysInWeek();
-    this.setMulMonthDateMatrix();
-    // this.activeDate = this.currentDate;
-    this.calculateActiveDate();
-    // this.setUpDateMatrix(true);
+    this.getTaskData();
+    setTimeout(()=>{
+      this.setUpDaysInWeek();
+      this.setMulMonthDateMatrix();
+      // this.activeDate = this.currentDate;
+      this.calculateActiveDate();
+      // this.setUpDateMatrix(true);
+      this.cd.detectChanges();
+    }, 80);
   }
   ngAfterViewInit(): void {
     console.log(this.activeDate);
     setTimeout(() => {
       this.createSwipe();
+      console.log('当前视图的日历数据...');
       console.log(this.dateMatrixList);
     }, 200);
   }
@@ -87,6 +96,19 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       this.daysInWeek.push({ title, label });
     }
   }
+  getTaskData() {
+    this.http.get('/api_note/v1/query_note_view', {
+      params: {
+        query_type: '5'
+      }
+    }).subscribe((res: any) => {
+      if (res) {
+        console.log(res);
+        this.activeMonthTasks = res.results.note_data_list;
+      }
+    })
+  }
+
   createSwipe() {
     console.log('初始化显示第几个');
     console.log(this.maxPoint/ 2);
@@ -179,7 +201,7 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       console.log(this.nzMode);
       weekDiff = 1;
     }
-    for (let week = 0; week < weekDiff; week++) {
+    for (let week = 0; week < weekDiff - 1; week++) {
       const row: DateCellContext[] = [];
       const weekStart = addDays(this.calendarStart, week * 7);
       for (let day = 0; day < 7; day++) {
@@ -189,7 +211,15 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
         const title = this.dateHelper.format(date, dateFormat);
         const label = this.dateHelper.format(date, this.dateHelper.relyOnDatePipe ? 'dd' : 'DD');
         const rel = monthDiff === 0 ? 'current' : monthDiff < 0 ? 'last' : 'next';
-        row.push({ title, label, rel, value: date });
+        let tasksList = [];
+        console.log(this.activeMonthTasks);
+        this.activeMonthTasks.forEach(tasks => {
+          let taskDate = new Date(tasks.tip_time);
+          if(date.getMonth() === taskDate.getMonth() && date.getDate() === taskDate.getDate()) {
+            tasksList.push(tasks);
+          }
+        });
+        row.push({ title, label, rel, value: date, tasks: tasksList});
       }
       dateMatrix.push(row);
     }
@@ -289,4 +319,5 @@ export interface DateCellContext {
   label: string;
   rel: 'last' | 'current' | 'next';
   value: Date;
+  tasks?: Array;
 }

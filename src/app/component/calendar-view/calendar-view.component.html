@@ -40,7 +40,7 @@
                           [class.ant-fullcalendar-last-month-cell]="day.rel === 'last'"
                           [class.ant-fullcalendar-next-month-btn-day]="day.rel === 'next'"
                           (click)="onDateSelect(day.value)">
-                        <div class="ant-fullcalendar-date">
+                     <!--   <div class="ant-fullcalendar-date">
                           <ng-container *ngIf="dateFullCell else defaultCell">
                             <ng-container *ngTemplateOutlet="dateFullCell; context: {$implicit: day.value}"></ng-container>
                           </ng-container>
@@ -50,6 +50,12 @@
                               <ng-container *ngTemplateOutlet="dateCell; context: {$implicit: day.value}"></ng-container>
                             </div>
                           </ng-template>
+                        </div>-->
+                        <div class="ant-fullcalendar-date">
+                            <div class="ant-fullcalendar-value">{{ day.label }}</div>
+                            <div *ngIf="day.tasks.length" class="ant-fullcalendar-content">
+                              <app-calendar-view-task [items]="day.tasks"></app-calendar-view-task>
+                            </div>
                         </div>
                       </td>
                     </tr>
