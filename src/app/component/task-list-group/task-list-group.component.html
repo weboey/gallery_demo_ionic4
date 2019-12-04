@@ -1,8 +1,8 @@
 <div>
   <ion-list>
     <ion-item-sliding *ngFor="let entry of items">
-      <ion-item routerLink="/task-detail">
-        <ion-checkbox [(ngModel)]="entry.isChecked"></ion-checkbox>
+      <ion-item routerLink="/task-detail" (click)="enterTaskDetailPage(entry)">
+        <!--<ion-checkbox [(ngModel)]="entry.isChecked"></ion-checkbox>-->
         <ion-label>
           <span>{{entry.title}}</span>
           <span class="date">{{entry.tip_time}}</span>

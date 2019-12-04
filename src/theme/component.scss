@@ -11,6 +11,9 @@
 
 .ion-page{
   app-calendar-view{
+    .ant-fullcalendar-content{
+      margin-top: 4px;
+    }
     app-calendar-view-task{
       .task-box{
         flex-direction: column;
@@ -57,4 +60,36 @@
       }
     }
   }
+}
+
+.ant-fullcalendar-fullscreen .ant-fullcalendar-date:active, .ant-fullcalendar-fullscreen .ant-fullcalendar-month:active{
+  background-color: initial !important;
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-date:hover, .ant-fullcalendar-fullscreen .ant-fullcalendar-month:hover{
+  background-color: initial !important;
+}
+
+// 周视图
+.ion-page{
+  app-calendar-view-week{
+    .ant-fullcalendar-calendar-body{
+      padding-left: 46px;
+      padding-right: 0;
+    }
+    .my-week-body{
+      padding-left: 46px !important;
+    }
+    .time-box li.time-item{
+      margin: 0 !important;
+      span{
+        margin-right: 2px !important;
+      }
+    }
+  }
+}
+
+.my-calendar-selected-day{
+  border-radius: 50%;
+  color: #fff;
+  background: #1890ff;
 }

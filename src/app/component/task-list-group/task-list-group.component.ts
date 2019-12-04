@@ -55,4 +55,10 @@ export class TaskListGroupComponent implements OnInit {
       queryParams: task
     })
   }
+
+  enterTaskDetailPage(task) {
+    this.router.navigate(['/task-detail'], {
+      queryParams: task
+    })
+  }
 }

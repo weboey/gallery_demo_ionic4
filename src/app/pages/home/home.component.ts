@@ -132,6 +132,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   enterCreateTaskPage(fileName?: string) {
     this.isAudioRecording = false;
+    console.log(this.router);
     this.router.navigate(['/task-create'], {queryParams: {fileName}})
   }
 }

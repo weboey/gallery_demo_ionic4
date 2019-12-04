@@ -11,3 +11,26 @@
     font-size: .8em;
   }
 }
+
+$offsetBase: 40px;
+.offset-1{
+
+}
+.offset-2{
+  margin-left: $offsetBase*2;
+  & + .offset-2{
+    margin-left: 0;
+  }
+}
+.offset-3{
+  margin-left: $offsetBase;
+}
+.offset-4{
+  margin-left: $offsetBase;
+}
+.offset-5{
+  margin-left: $offsetBase;
+}
+.offset-6{
+  margin-left: $offsetBase;
+}

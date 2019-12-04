@@ -33,10 +33,8 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   daysInWeek: DayCellContext[] = [];
   dateMatrix: DateCellContext[][] = [];
   dateMatrixList = [];
-  virtualData: any;
   activeDate: Date = new Date();
   activeMonth: number;
-  dateFullCell: TemplateRef<{ $implicit: Date }> | null = null;
   currentDateRow = -1;
   currentDateCol = -1;
   activeDateRow = -1;
@@ -54,10 +52,10 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.setUpDaysInWeek();
     this.setMulMonthDateMatrix();
-    this.activeDate = this.currentDate;
     this.setUpDateMatrix(true);
     this.calculateActiveDate();
     this.setTimeViewData();
+    this.getTaskData();
   }
   setTimeViewData() {
     for (let i = 0; i < 24; i++) {
@@ -85,10 +83,12 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.createSwipe();
-      this.getTaskData();
       console.log('当前视图的日历数据...');
       console.log(this.dateMatrixList);
-    }, 300);
+      this.activeDate = this.currentDate;
+      this.calculateActiveDate();
+      this.cd.detectChanges();
+    }, 200);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -135,8 +135,20 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
       }
     }).subscribe((res: any) => {
       if (res) {
-        this.dateMatrixList.forEach(weekItem => {
-          weekItem.tasks = res.results.note_data_list;
+        const taskResults = res.results.note_data_list;
+        this.dateMatrixList[this.curPoint].forEach(weekItem => {
+          const weekTasks = [];
+          weekItem.forEach(col => {
+            console.log(col);
+            taskResults.forEach(tasks => {
+              let taskDate = new Date(tasks.tip_time);
+              tasks['colOffset'] = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
+              if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
+                weekTasks.push(tasks);
+              }
+            });
+          });
+          this.dateMatrixList[this.curPoint].tasks = weekTasks;
           this.cd.detectChanges();
         });
       }
@@ -157,7 +169,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
     const monthStart = startOfMonth(this.activeDate);
     const monthEnd = endOfMonth(this.activeDate);
     const weekDiff =
-      differenceInCalendarWeeks(monthEnd, monthStart, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() }) + 2;
+      differenceInCalendarWeeks(monthEnd, monthStart, { weekStartsOn: this.dateHelper.getFirstDayOfWeek() }) + 1;
     this.maxPoint = weekDiff;
     for (let week = 0; week < weekDiff; week++) {
       const dateMatrix = [];
@@ -170,7 +182,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
         const title = this.dateHelper.format(date, dateFormat);
         const label = this.dateHelper.format(date, this.dateHelper.relyOnDatePipe ? 'dd' : 'DD');
         const rel = monthDiff === 0 ? 'current' : monthDiff < 0 ? 'last' : 'next';
-        if(date.getDate() === this.activeDate.getDate()) {
+        if(date.getMonth() === this.activeDate.getMonth() && date.getDate() === this.activeDate.getDate()) {
           this.curPoint = week;
           console.log('找到了');
           console.log(this.curPoint);
@@ -179,6 +191,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
       }
       dateMatrix.push(row);
       dateMatrix['tasks'] = [];
+      dateMatrix['panel'] = week;
       this.dateMatrixList.push(dateMatrix);
     }
     // if (isTop) {
@@ -192,6 +205,8 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
       weekStartsOn: this.dateHelper.getFirstDayOfWeek()
     });
     this.activeDateCol = differenceInCalendarDays(this.activeDate, addDays(this.calendarStart, this.activeDateRow * 7));
+    console.error('高亮计算');
+    console.error(this.activeDateRow, this.activeDateCol)
   }
   private calculateActiveMonth() {
     this.activeMonthRow = Math.floor(this.activeDate.getMonth() / 3);

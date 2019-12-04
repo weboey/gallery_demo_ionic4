@@ -15,10 +15,10 @@
         <div class="swiper-slide" *ngFor="let dateMatrixItem of dateMatrixList">
           <div class="swiper-zoom-container">
             <div class="week-body">
-              <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box">
+              <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box my-week-body">
                 <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell"
                     [class.ant-fullcalendar-today]="row === currentDateRow && col === currentDateCol"
-                    [class.my-calendar-selected-day]="row === activeDateRow && col === activeDateCol"
+                    [class.my-calendar-selected-day]="col === activeDateCol && dateMatrixItem.panel === activeDateRow"
                     [class.ant-fullcalendar-last-month-cell]="day.rel === 'last'"
                     [class.ant-fullcalendar-next-month-btn-day]="day.rel === 'next'"
                     (click)="onDateSelect(day.value)">
