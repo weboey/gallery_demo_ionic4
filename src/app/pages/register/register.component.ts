@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-
-  constructor() { }
+  user: any = {
+    phone: '',
+    pwd: ''
+  };
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
   }
 
+  submitRegister() {
+    console.log(this.user)
+  }
 }

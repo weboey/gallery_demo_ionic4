@@ -19,6 +19,7 @@ import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
 import {forkJoin} from "rxjs/index";
 import {HttpClient} from "@angular/common/http";
+import {Router} from '@angular/router';
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view-week',
@@ -30,6 +31,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   @Input() nzMode = 'month';
   swiper: any = {isEnd: false};
   timeViewList = [];
+  taskList = [];
   daysInWeek: DayCellContext[] = [];
   dateMatrix: DateCellContext[][] = [];
   dateMatrixList = [];
@@ -47,6 +49,7 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   @ViewChild('panel') panel: ElementRef;
   constructor(private element: ElementRef, private dateHelper: DateHelperService,
               private cd: ChangeDetectorRef,
+              private router: Router,
               private http: HttpClient) { }
 
   ngOnInit() {
@@ -65,20 +68,6 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
         this.timeViewList.push(`${i}:00`);
       }
     }
-    // for (let i = 1; i < 12; i++) {
-    //   if (i < 10 ) {
-    //     this.timeViewList.push(`上午 0${i}:00`);
-    //   } else {
-    //     this.timeViewList.push(`下午 ${i}:00`);
-    //   }
-    // }
-    // for (let i = 1; i < 12; i++) {
-    //   if (i < 10 ) {
-    //     this.timeViewList.push(`上午 0${i}:00`);
-    //   } else {
-    //     this.timeViewList.push(`下午 ${i}:00`);
-    //   }
-    // }
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -142,18 +131,52 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
             console.log(col);
             taskResults.forEach(tasks => {
               let taskDate = new Date(tasks.tip_time);
-              tasks['colOffset'] = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
+              // tasks['colOffset'] = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
               if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
                 weekTasks.push(tasks);
               }
             });
           });
-          this.dateMatrixList[this.curPoint].tasks = weekTasks;
+          console.log('这周的任务');
+          console.log(weekItem);
+          console.error(this.dateMatrixList[this.curPoint]);
+          this.dateMatrixList[this.curPoint].tasks = this.dateMatrixList[this.curPoint].tasks.map(row => {
+            const argsH = row[0][0].title.split(':')[0];
+            const argsM = row[0][0].title.split(':')[1];
+            weekTasks.forEach(item => {
+              let taskDate = new Date(item.tip_time);
+              let colOffset = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
+              let h = item.tip_time.split(' ')[1].split(':')[0];
+              let m = item.tip_time.split(' ')[1].split(':')[1];
+              if ( h == argsH && m > argsM && colOffset >= 0) {
+                console.error(colOffset);
+                row[colOffset+1].push(item)
+              }
+            })
+            // console.error([row[0]].concat(this.transform(weekTasks, row[0][0].title)));
+            // return [row[0]].concat(this.transform(weekTasks, row[0][0].title))
+            return row;
+          })
           this.cd.detectChanges();
         });
       }
     })
   }
+  // transform(value: any, args?: any): any {
+  //   const argsH = args.split(':')[0];
+  //   const argsM = args.split(':')[1];
+  //   const result = [];
+  //   return value.filter(item => {
+  //     let taskDate = new Date(item.tip_time);
+  //     let colOffset = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
+  //     let h = item.tip_time.split(' ')[1].split(':')[0];
+  //     let m = item.tip_time.split(' ')[1].split(':')[1];
+  //     if ( h == argsH && m > argsM) {
+  //       return item
+  //     }
+  //   });
+  // }
+
   private get calendarStart(): Date {
     return startOfWeek(startOfMonth(this.activeDate), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });
   }
@@ -191,6 +214,13 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
       }
       dateMatrix.push(row);
       dateMatrix['tasks'] = [];
+      for (let i = 0; i < 24; i++) {
+        if (i < 10 ) {
+          dateMatrix['tasks'].push([[{title: `0${i}:00`}], [], [], [], [], [], [], []]);
+        } else {
+          dateMatrix['tasks'].push([[{title: `${i}:00`}], [], [], [], [], [], [], []]);
+        }
+      }
       dateMatrix['panel'] = week;
       this.dateMatrixList.push(dateMatrix);
     }
@@ -257,6 +287,14 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   toggleMode(v) {
     this.nzMode = v;
     this.ngOnInit();
+  }
+  enterTaskDetailPage(ev, task) {
+    ev.stopPropagation();
+    if(task.id) {
+      this.router.navigate(['/task-detail'], {
+        queryParams: task
+      })
+    }
   }
 }
 

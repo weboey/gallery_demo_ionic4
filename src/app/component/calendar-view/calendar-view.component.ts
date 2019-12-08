@@ -26,6 +26,7 @@ import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
 import {DateHelperService} from "../../services/date-helper.service";
 import {HttpClient} from "@angular/common/http";
+import {Events} from '@ionic/angular';
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view',
@@ -59,6 +60,7 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   @Output() nzSelectChange: EventEmitter<any> = new EventEmitter<any>();
   constructor(private element: ElementRef, private dateHelper: DateHelperService,
               private cd: ChangeDetectorRef,
+              private events: Events,
               private http: HttpClient) { }
   onDateSelect(date: Date): void {
     console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
@@ -74,6 +76,23 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     // this.calculateActiveDate();
     // this.setUpDateMatrix(true);
     this.cd.detectChanges();
+    this.events.subscribe('addTask', (task) => {
+      console.error('增加了任务');
+      console.error(task);
+      const curMonthViewPanel = this.dateMatrixList.find(item => item['month'] === this.currentDate.getMonth());
+      console.error(curMonthViewPanel);
+      if(curMonthViewPanel) {
+        curMonthViewPanel.forEach(row => {
+          row.forEach( col => {
+            let taskDate = new Date(task.tip_time);
+            if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
+              col.tasks.push(task);
+            }
+          })
+        })
+        this.cd.detectChanges();
+      }
+    })
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -108,25 +127,28 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
         if (res) {
           console.log(res);
           this.activeMonthTasks = res.results.note_data_list;
-          const curMonthView = this.dateMatrixList.find(item => item['month'] === this.currentDate.getMonth());
-          if(curMonthView) {
-            console.error(curMonthView);
-            curMonthView.forEach(row => {
-              row.forEach( col => {
-                this.activeMonthTasks.forEach(tasks => {
-                  let taskDate = new Date(tasks.tip_time);
-                  if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
-                    col.tasks.push(tasks);
-                  }
-                });
-              })
-            })
-          }
+          this.updateTask();
         }
       })
     }
   }
-
+  updateTask() {
+    const curMonthView = this.dateMatrixList.find(item => item['month'] === this.currentDate.getMonth());
+    if(curMonthView) {
+      console.error(curMonthView);
+      curMonthView.forEach(row => {
+        row.forEach( col => {
+          col.tasks = [];
+          this.activeMonthTasks.forEach(tasks => {
+            let taskDate = new Date(tasks.tip_time);
+            if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
+              col.tasks.push(tasks);
+            }
+          });
+        })
+      })
+    }
+  }
   createSwipe() {
     console.log('初始化显示第几个');
     console.log(this.maxPoint/ 2);
@@ -158,24 +180,14 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     if (typeof index === 'undefined') {
       return;
     }
-    const i = index - this.maxPoint / 2;
-    const curMonth = this.activeDate.getMonth();
-
     if (this.swiper.swipeDirection === 'prev') {
-      // if (Math.abs(this.minPoint - i) <= 4) {
-      //   this.monthChangeHandler(this.minPoint - 1);
-      //   this.maxPoint --;
-      // }
       this.currentDate = addMonths(this.currentDate, -1)
     } else {
-      // if (Math.abs(this.maxPoint - i) <= 4) {
-      //   this.monthChangeHandler(this.maxPoint + 1);
-      //   this.maxPoint ++;
-      // }
       this.currentDate = addMonths(this.currentDate, 1)
     }
+    this.updateTask();
     setTimeout( () => {
-      this.swiper.update();
+      // this.swiper.update();
     }, 100);
     this.dateChange.emit(this.currentDate);
     this.cd.detectChanges();

@@ -86,10 +86,18 @@
       }
     }
   }
+
 }
 
 .my-calendar-selected-day{
   border-radius: 50%;
   color: #fff;
   background: #1890ff;
+}
+
+
+app-calendar-modal{
+  .ant-fullcalendar-fullscreen .ant-fullcalendar-date{
+    height: 68px !important;
+  }
 }

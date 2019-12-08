@@ -1,5 +1,5 @@
 <ul class="task-box">
-  <li *ngFor="let task of items" (click)="enterTaskDetailPage(task)" class="offset-{{task?.colOffset}}">
+  <li *ngFor="let task of items" (click)="enterTaskDetailPage(task)">
     {{ task.title }}
   </li>
 </ul>
