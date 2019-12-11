@@ -37,7 +37,6 @@ import { httpInterceptorProviders } from './http-interceptors';
     TaskDetailComponent,
     TaskCreateComponent,
     CalendarModalComponent,
-
   ],
   entryComponents: [CalendarModalComponent],
   imports: [

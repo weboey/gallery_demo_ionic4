@@ -16,7 +16,7 @@ import {PipesModule} from "../../pipes/pipes.module";
     ComponentModule,
     PipesModule,
     RouterModule.forChild([
-      {path: '', component: HomeComponent}
+      {path: '', component: HomeComponent},
       // { path: '', redirectTo: '/home', pathMatch: 'full'}
     ])
   ]
