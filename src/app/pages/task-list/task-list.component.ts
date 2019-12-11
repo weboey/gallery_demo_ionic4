@@ -20,7 +20,7 @@ import {HttpClient} from "@angular/common/http";
   ]
 })
 export class TaskListComponent implements OnInit {
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: true}) infiniteScroll: IonInfiniteScroll;
   startTime = '';
   endTime = '';
   constructor(private http: HttpClient) {

@@ -8,3 +8,96 @@
   color: #fff;
   background: #1890ff;
 }
+
+.ion-page{
+  app-calendar-view{
+    .ant-fullcalendar-content{
+      margin-top: 4px;
+    }
+    app-calendar-view-task{
+      .task-box{
+        flex-direction: column;
+        li{
+          margin-right: 0 !important;
+          border-left: 0 !important;
+          &:nth-of-type(1){
+            background-color: #FF9966 !important;
+          }
+          &:nth-of-type(2){
+            background-color: #66CCFF !important;
+          }
+          &:nth-of-type(3){
+            background-color: #33CC33 !important;
+          }
+          &:nth-of-type(4){
+            background-color: #1ABC9C !important;
+          }
+          &:not(:last-child) {
+            margin-bottom: 2px;
+          }
+        }
+      }
+    }
+    .ant-fullcalendar-last-month-cell, .ant-fullcalendar-next-month-btn-day{
+      app-calendar-view-task{
+        .task-box{
+          li{
+            color: rgba(0,0,0,.25);
+            &:nth-of-type(1){
+              background-color: rgba(#FF9966, .25) !important;
+            }
+            &:nth-of-type(2){
+              background-color: rgba(#66CCFF, .25) !important;
+            }
+            &:nth-of-type(3){
+              background-color: rgba(#33CC33, .25) !important;
+            }
+            &:nth-of-type(4){
+              background-color: rgba(#1ABC9C, .25) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.ant-fullcalendar-fullscreen .ant-fullcalendar-date:active, .ant-fullcalendar-fullscreen .ant-fullcalendar-month:active{
+  background-color: initial !important;
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-date:hover, .ant-fullcalendar-fullscreen .ant-fullcalendar-month:hover{
+  background-color: initial !important;
+}
+
+// 周视图
+.ion-page{
+  app-calendar-view-week{
+    .ant-fullcalendar-calendar-body{
+      padding-left: 46px;
+      padding-right: 0;
+    }
+    .my-week-body{
+      padding-left: 46px !important;
+    }
+    .time-box li.time-item{
+      margin: 0 !important;
+      span{
+        margin-right: 2px !important;
+      }
+    }
+  }
+
+}
+
+.my-calendar-selected-day{
+  border-radius: 50%;
+  color: #fff;
+  background: #1890ff;
+}
+
+
+app-calendar-modal{
+  .ant-fullcalendar-fullscreen .ant-fullcalendar-date{
+    height: 68px !important;
+  }
+}

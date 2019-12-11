@@ -16,7 +16,7 @@ export abstract class CalendarBase {
     constructor() {console.log('base ---------22----');}
     @Output() readonly nzSelectChange: EventEmitter<Date> = new EventEmitter();
     @Output() readonly nzValueChange: EventEmitter<Date> = new EventEmitter();
-    onDateSelect(date: Date): void {
+    onDateSelect(date: Date, i?:any): void {
         console.log(date);
         this.updateDate(date);
         this.nzSelectChange.emit(date);

@@ -20,28 +20,28 @@
 
     <ion-row align-items-center class="border-bottom">
       <ion-col size="1.4" class="translateY3">
-        <ion-icon name="person-add"></ion-icon>
+        <ion-icon name="call"></ion-icon>
       </ion-col>
       <ion-col>
-        <ion-input [placeholder]="'手机号码'"></ion-input>
+        <ion-input [placeholder]="'手机号码'" [(ngModel)]="user.phone"></ion-input>
       </ion-col>
     </ion-row>
 
     <ion-row align-items-center  class="border-bottom">
       <ion-col size="1.4" class="translateY3">
-        <ion-icon name="nuclear"></ion-icon>
+        <ion-icon name="lock"></ion-icon>
       </ion-col>
       <ion-col>
-        <ion-input [placeholder]="'短信验证码'"></ion-input>
+        <ion-input [placeholder]="'短信验证码'" value="******"></ion-input>
       </ion-col>
     </ion-row>
 
     <ion-row align-items-center  class="border-bottom">
       <ion-col size="1.4" class="translateY3">
-        <ion-icon name="nuclear"></ion-icon>
+        <ion-icon name="lock"></ion-icon>
       </ion-col>
       <ion-col>
-        <ion-input [placeholder]="'设置登陆密码'"></ion-input>
+        <ion-input [placeholder]="'设置登陆密码'" [(ngModel)]="user.password"></ion-input>
       </ion-col>
       <ion-col [size]="2">
         <ion-toggle color="secondary"></ion-toggle>
@@ -50,15 +50,9 @@
 
     <ion-row align-items-end justify-content-end>
       <ion-col>
-        <ion-button style="width: 100%;" [color]="'secondary'">确认</ion-button>
+        <ion-button style="width: 100%;" [color]="'secondary'" (click)="submitRegister()">确认</ion-button>
       </ion-col>
     </ion-row>
-
-    <!--<ion-row align-items-end justify-content-end>-->
-      <!--<ion-col style="text-align: center;">-->
-        <!--<a routerLink="/register">创建账号</a>-->
-      <!--</ion-col>-->
-    <!--</ion-row>-->
 
     <ion-row align-items-end justify-content-end class="banner">
       <ion-col style="text-align: center;">

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController, NavController, ToastController} from "@ionic/angular";
+import {Events, ModalController, NavController, ToastController} from '@ionic/angular';
 import {CalendarModalComponent} from "../calendar-modal/calendar-modal.component";
 import {ActivatedRoute} from "@angular/router";
 import {FileService} from "../../services/file.service";
@@ -26,6 +26,7 @@ export class TaskCreateComponent implements OnInit {
                 public toastController: ToastController,
                 public nav: NavController,
                 private http: HttpClient,
+                private events: Events,
                 private fileService: FileService) {
     }
 
@@ -78,11 +79,12 @@ export class TaskCreateComponent implements OnInit {
             tip_time: this.curDate + ' ' + this.curTime, // '2019-08-25 14:30',
             title: this.content,
             content: this.content
-        }).subscribe(res => {
+        }).subscribe((res: any) => {
             toast.present();
+            this.events.publish('addTask', res.results);
             setTimeout(() => {
-                this.nav.goBack();
-                this.nav.goBack();
+                this.nav.back();
+                // this.nav.goBack();
             }, 100)
         })
     }

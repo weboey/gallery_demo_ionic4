@@ -1,7 +1,9 @@
 import {Inject, Injectable, InjectionToken, Injector, Optional} from '@angular/core';
-import * as fnsParse from 'date-fns/parse';
-import * as fnsGetISOWeek from 'date-fns/get_iso_week';
-import * as fnsFormat from 'date-fns/format';
+// import * as fnsParse from 'date-fns/parse';
+// import * as fnsGetISOWeek from 'date-fns/get_iso_week';
+
+import { format } from 'date-fns'
+import { parse } from 'date-fns'
 import {formatDate} from "@angular/common";
 export interface NzDateConfig {
     /** Customize the first day of a week */
@@ -31,9 +33,9 @@ export class DateHelperService {
         this.config = mergeDateConfig(this.config);
     }
 
-    getISOWeek(date: Date): number {
-        return fnsGetISOWeek(date);
-    }
+    // getISOWeek(date: Date): number {
+    //     return fnsGetISOWeek(date);
+    // }
 
     // TODO: Use date-fns's "weekStartsOn" to support different locale when "config.firstDayOfWeek" is null
     // when v2.0 is ready: https://github.com/date-fns/date-fns/blob/v2.0.0-alpha.27/src/locale/en-US/index.js#L23
@@ -48,28 +50,28 @@ export class DateHelperService {
      * @param formatStr format string
      */
     format(date: Date, formatStr: string): string {
-        return fnsFormat(date, formatStr, { locale: 'zh-CN' });
+        return format(date, formatStr);
     }
 
-    parseDate(text: string): Date | undefined {
-        if (!text) {
-            return;
-        }
-        return fnsParse(text);
-    }
-
-    parseTime(text: string): Date | undefined {
-        if (!text) {
-            return;
-        }
-        return fnsParse(`1970-01-01 ${text}`);
-    }
+    // parseDate(text: string): Date | undefined {
+    //     if (!text) {
+    //         return;
+    //     }
+    //     return parse(text);
+    // }
+    //
+    // parseTime(text: string): Date | undefined {
+    //     if (!text) {
+    //         return;
+    //     }
+    //     return parse(`1970-01-01 ${text}`);
+    // }
 }
 
 export class DateHelperByDateFns extends DateHelperService {
-    getISOWeek(date: Date): number {
-        return fnsGetISOWeek(date);
-    }
+    // getISOWeek(date: Date): number {
+    //     return fnsGetISOWeek(date);
+    // }
 
     // TODO: Use date-fns's "weekStartsOn" to support different locale when "config.firstDayOfWeek" is null
     // when v2.0 is ready: https://github.com/date-fns/date-fns/blob/v2.0.0-alpha.27/src/locale/en-US/index.js#L23
@@ -84,7 +86,7 @@ export class DateHelperByDateFns extends DateHelperService {
      * @param formatStr format string
      */
     format(date: Date, formatStr: string): string {
-        return fnsFormat(date, formatStr, { locale: 'zh-CN' });
+        return format(date, formatStr);
     }
 }
 
@@ -119,13 +121,13 @@ export class DateHelperByDatePipe extends DateHelperService {
      * @link https://angular.io/api/common/DatePipe#description
      * @param format input format pattern
      */
-    transCompatFormat(format: string): string {
-        return (
-            format &&
-            format
-                .replace(/Y/g, 'y') // only support y, yy, yyy, yyyy
-                .replace(/D/g, 'd')
-        ); // d, dd represent of D, DD for momentjs, others are not support
-    }
+    // transCompatFormat(format: string): string {
+    //     return (
+    //         format &&
+    //         format
+    //             .replace(/Y/g, 'y') // only support y, yy, yyy, yyyy
+    //             .replace(/D/g, 'd')
+    //     ); // d, dd represent of D, DD for momentjs, others are not support
+    // }
 }
 export type WeekDayIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6;

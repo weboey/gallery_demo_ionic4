@@ -13,7 +13,7 @@ export class TaskDetailComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
               public toastController: ToastController) { }
   isEdit = false;
-  @ViewChild('textInputEl') textInputEl: any;
+  @ViewChild('textInputEl', {static: true}) textInputEl: any;
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe((q: any) => {
       console.log(q.params);

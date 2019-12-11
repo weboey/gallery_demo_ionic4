@@ -8,8 +8,6 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {Camera} from '@ionic-native/camera/ngx';
-import {IonicStorageModule} from '@ionic/storage';
 import {Media} from '@ionic-native/media/ngx';
 import {File} from '@ionic-native/file/ngx';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -30,45 +28,39 @@ import {PipesModule} from "./pipes/pipes.module";
 registerLocaleData(zh);
 // 拦截器配置
 import { httpInterceptorProviders } from './http-interceptors';
+
 @NgModule({
   declarations: [
-    AppComponent,
-    TaskListComponent,
-    TaskDetailComponent,
-    TaskCreateComponent,
-    CalendarModalComponent,
-
-  ],
+      AppComponent,
+      TaskListComponent,
+      TaskDetailComponent,
+      TaskCreateComponent,
+      CalendarModalComponent],
   entryComponents: [CalendarModalComponent],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    IonicModule.forRoot({
-      backButtonText: ''
-    }),
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    ComponentModule,
-    PipesModule,
-    IonicStorageModule.forRoot()
-  ],
+  imports: [    BrowserModule,
+      FormsModule,
+      IonicModule.forRoot({
+          backButtonText: ''
+      }),
+      AppRoutingModule,
+      HttpClientModule,
+      BrowserAnimationsModule,
+      ComponentModule,
+      PipesModule],
   providers: [
-    StatusBar,
-    SplashScreen,
-    Camera,
-    Media,
-    File,
-    FileTransfer,
-    httpInterceptorProviders,
-    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-    {
-      provide: NZ_DATE_CONFIG, useValue: {
-        firstDayOfWeek: 0
+      StatusBar,
+      SplashScreen,
+      Media,
+      File,
+      FileTransfer,
+      httpInterceptorProviders,
+      {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+      {
+          provide: NZ_DATE_CONFIG, useValue: {
+              firstDayOfWeek: 1
+          }
       }
-    }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

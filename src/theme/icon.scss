@@ -1,0 +1,39 @@
+/*  调整下拉箭头大小 */
+.ion-ios-arrow-down:before{
+  font-size: 2rem;
+}
+.tabs-ios .tab-button-icon{
+  font-size: 25px !important;
+  margin-bottom: -1px;
+}
+
+/* 自定义 icon 图标 */
+ion-icon{
+  // 微信
+
+}
+.ion-ios-wx{
+  position: relative;
+  content: '';
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: url('/assets/imgs/weixin_login.png');
+  background-size: contain;
+}
+
+.tab-button[aria-selected=true]{
+  .ion-ios-home-outline:after{
+    content: "\e90a";
+  }
+  .ion-ios-message-outline:after{
+    content: "\e90e";
+  }
+  .ion-ios-my-outline:after{
+    content: "\e90d";
+  }
+  .ion-ios-activity-outline:after{
+    content: "\e701";
+  }
+}

@@ -24,7 +24,7 @@ export class TaskListViewContainerComponent implements OnInit {
   startDate = formatDate(new Date(), 'yyyy-MM-dd', 'zh_CN');
   endDate = formatDate(new Date(), 'yyyy-MM-dd', 'zh_CN');
   taskList = [];
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild(IonInfiniteScroll, {static: true}) infiniteScroll: IonInfiniteScroll;
 
   constructor(private http: HttpClient) {
   }
@@ -48,7 +48,11 @@ export class TaskListViewContainerComponent implements OnInit {
       }
     })
   }
-
+  changeHandler() {
+    setTimeout(()=>{
+      this.getInitData();
+    },500)
+  }
   loadData(event) {
     return new Promise((resolve) => {
       setTimeout(() => {

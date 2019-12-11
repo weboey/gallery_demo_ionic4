@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, ChangeDetectionStrategy,
+  AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -25,6 +25,8 @@ import { isSameYear } from 'date-fns';
 import { isSameMonth } from 'date-fns';
 import { isSameDay } from 'date-fns';
 import {DateHelperService} from "../../services/date-helper.service";
+import {HttpClient} from "@angular/common/http";
+import {Events} from '@ionic/angular';
 declare let Swiper: any;
 @Component({
   selector: 'app-calendar-view',
@@ -34,6 +36,7 @@ declare let Swiper: any;
 })
 export class CalendarViewComponent implements OnInit, AfterViewInit {
   @Input() nzMode = 'month';
+  @Input() isLoadData = true;
   swiper: any = {isEnd: false};
   daysInWeek: DayCellContext[] = [];
   dateMatrix: DateCellContext[][] = [];
@@ -41,39 +44,66 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   virtualData: any;
   activeDate: Date = new Date();
   activeMonth: number;
-  dateFullCell: TemplateRef<{ $implicit: Date }> | null = null;
   currentDateRow = -1;
   currentDateCol = -1;
   activeDateRow = -1;
   activeDateCol = -1;
   activeMonthRow = -1;
   activeMonthCol = -1;
-  maxPoint = 12;
+  maxPoint = 4;
   minPoint = 0;
+  isReady = false;
   private currentDate = new Date();
-  @ViewChild('panel') panel: ElementRef;
+  activeMonthTasks = [];
+  @ViewChild('panel', { static: true }) panel: ElementRef;
   @Output() dateChange: EventEmitter<any> = new EventEmitter<any>();
   @Output() nzSelectChange: EventEmitter<any> = new EventEmitter<any>();
-  constructor(private element: ElementRef, private dateHelper: DateHelperService) { }
+  constructor(private element: ElementRef, private dateHelper: DateHelperService,
+              private cd: ChangeDetectorRef,
+              private events: Events,
+              private http: HttpClient) { }
   onDateSelect(date: Date): void {
-    console.log(date);
     console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
     this.nzSelectChange.emit(date);
     this.updateDate(date);
   }
   ngOnInit() {
+    if(this.isLoadData) {
+      this.getTaskData();
+    }
     this.setUpDaysInWeek();
     this.setMulMonthDateMatrix();
-    // this.activeDate = this.currentDate;
-    this.calculateActiveDate();
+    // this.calculateActiveDate();
     // this.setUpDateMatrix(true);
+    this.cd.detectChanges();
+    this.events.subscribe('addTask', (task) => {
+      console.error('增加了任务');
+      console.error(task);
+      const curMonthViewPanel = this.dateMatrixList.find(item => item['month'] === this.currentDate.getMonth());
+      console.error(curMonthViewPanel);
+      if(curMonthViewPanel) {
+        curMonthViewPanel.forEach(row => {
+          row.forEach( col => {
+            let taskDate = new Date(task.tip_time);
+            if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
+              col.tasks.push(task);
+            }
+          })
+        })
+        this.cd.detectChanges();
+      }
+    })
   }
   ngAfterViewInit(): void {
-    console.log(this.activeDate);
     setTimeout(() => {
       this.createSwipe();
+      console.log('当前视图的日历数据...');
+      console.log(this.activeDate);
       console.log(this.dateMatrixList);
-    }, 200);
+      this.activeDate = this.currentDate;
+      this.calculateActiveDate();
+      this.cd.detectChanges();
+    }, 50);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -85,6 +115,38 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       // const label2 = fnsFormat(date, 'EEEEEE', { locale: 'zh_CN' });
       // const label3 = formatDate(date, 'EEEEEE', 'zh_CN');
       this.daysInWeek.push({ title, label });
+    }
+  }
+  getTaskData() {
+    if(this.isLoadData) {
+      this.http.get('/api_note/v1/query_note_view', {
+        params: {
+          query_type: '5'
+        }
+      }).subscribe((res: any) => {
+        if (res) {
+          console.log(res);
+          this.activeMonthTasks = res.results.note_data_list;
+          this.updateTask();
+        }
+      })
+    }
+  }
+  updateTask() {
+    const curMonthView = this.dateMatrixList.find(item => item['month'] === this.currentDate.getMonth());
+    if(curMonthView) {
+      console.error(curMonthView);
+      curMonthView.forEach(row => {
+        row.forEach( col => {
+          col.tasks = [];
+          this.activeMonthTasks.forEach(tasks => {
+            let taskDate = new Date(tasks.tip_time);
+            if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
+              col.tasks.push(tasks);
+            }
+          });
+        })
+      })
     }
   }
   createSwipe() {
@@ -105,25 +167,11 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       paginationType: 'fraction', // 分页器类型
       on: {
         slideChange: () => {
-          // if (this.swiper && this.swiper.isEnd) {
-          //   this.swiper.slideTo(2, 0);
-          // }
           this.renderMonthDateMatrix(this.swiper.activeIndex);
         }
-      },
-      // virtual: {
-      //   slides: this.dateMatrixList,
-      //   // renderSlide: (slide, index) => {
-      //   //   return '<div class="swiper-slide">索引是' + index + '+内容是' + slide + '</div>';
-      //   // }
-      //   renderExternal(data) {
-      //     // assign virtual slides data
-      //     this.virtualData = data;
-      //     console.log('??????????');
-      //     console.log(data);
-      //   }
-      // }
+      }
     });
+    this.isReady = true;
   }
   private get calendarStart(): Date {
     return startOfWeek(startOfMonth(this.activeDate), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });
@@ -132,37 +180,22 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     if (typeof index === 'undefined') {
       return;
     }
-    const i = index - this.maxPoint / 2;
-    const curMonth = this.activeDate.getMonth();
-    console.log(curMonth);
-    console.log(i);
-    console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
-    if (i > 0) {
-      if (Math.abs(this.maxPoint - i) <= 4) {
-        this.monthChangeHandler(this.maxPoint + 1);
-        this.maxPoint ++;
-      }
-      // this.swiper.appendSlide('<div class="swiper-slide">这是一个新的slide</div>');
-      // this.swiper.updateSlides();
-      this.currentDate = addMonths(this.currentDate, 1)
-    } else {
-      if (Math.abs(this.minPoint - i) <= 4) {
-        this.monthChangeHandler(this.minPoint - 1);
-        this.maxPoint --;
-      }
+    if (this.swiper.swipeDirection === 'prev') {
       this.currentDate = addMonths(this.currentDate, -1)
+    } else {
+      this.currentDate = addMonths(this.currentDate, 1)
     }
+    this.updateTask();
     setTimeout( () => {
-      this.swiper.update();
+      // this.swiper.update();
     }, 100);
-    console.log(this.dateMatrixList);
-
-    console.log(formatDate(this.currentDate, 'yyyy-MM-dd', 'zh_CN'));
     this.dateChange.emit(this.currentDate);
-    // swiper.appendSlide([
-    //   '<div class="swiper-slide">Slide ' + (++appendNumber) + '</div>',
-    //   '<div class="swiper-slide">Slide ' + (++appendNumber) + '</div>'
-    // ]);
+    this.cd.detectChanges();
+    console.log('月份切换后的参数.............');
+    console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
+    console.log(formatDate(this.currentDate, 'yyyy-MM-dd', 'zh_CN'));
+    console.log(this.activeDate.getMonth() == this.currentDate.getMonth());
+    console.log(this.activeDateRow, this.activeDateCol);
   }
   private setMulMonthDateMatrix() {
     const curMonth = this.activeDate.getMonth();
@@ -170,7 +203,7 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       this.monthChangeHandler(curMonth + i - this.maxPoint / 2);
     }
   }
-  private setUpDateMatrix(isTop = false): void {
+  private setUpDateMatrix(): void {
     const dateMatrix = [];
     const monthStart = startOfMonth(this.activeDate);
     const monthEnd = endOfMonth(this.activeDate);
@@ -180,7 +213,7 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       console.log(this.nzMode);
       weekDiff = 1;
     }
-    for (let week = 0; week < weekDiff; week++) {
+    for (let week = 0; week < weekDiff - 1; week++) {
       const row: DateCellContext[] = [];
       const weekStart = addDays(this.calendarStart, week * 7);
       for (let day = 0; day < 7; day++) {
@@ -190,10 +223,12 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
         const title = this.dateHelper.format(date, dateFormat);
         const label = this.dateHelper.format(date, this.dateHelper.relyOnDatePipe ? 'dd' : 'DD');
         const rel = monthDiff === 0 ? 'current' : monthDiff < 0 ? 'last' : 'next';
-        row.push({ title, label, rel, value: date });
+        let tasksList = [];
+        row.push({ title, label, rel, value: date, tasks: tasksList});
       }
       dateMatrix.push(row);
     }
+    dateMatrix['month'] = this.activeDate.getMonth();
     this.dateMatrixList.push(dateMatrix);
   }
   private setMonthDateMatrix(monthDate) {
@@ -221,10 +256,18 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     return  dateMatrix;
   }
   private calculateActiveDate(): void {
+    if(!this.isReady) {
+      return;
+    }
+    console.error('计算激活日期');
     this.activeDateRow = differenceInCalendarWeeks(this.activeDate, this.calendarStart, {
       weekStartsOn: this.dateHelper.getFirstDayOfWeek()
     });
     this.activeDateCol = differenceInCalendarDays(this.activeDate, addDays(this.calendarStart, this.activeDateRow * 7));
+    console.error(this.activeDate);
+    console.error(this.activeDateRow);
+    console.error(this.activeDateCol);
+
   }
   private calculateActiveMonth() {
     this.activeMonthRow = Math.floor(this.activeDate.getMonth() / 3);
@@ -290,4 +333,5 @@ export interface DateCellContext {
   label: string;
   rel: 'last' | 'current' | 'next';
   value: Date;
+  tasks?: Array<any>;
 }

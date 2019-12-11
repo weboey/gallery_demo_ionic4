@@ -4,7 +4,6 @@ import {File} from '@ionic-native/file/ngx';
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Router} from "@angular/router";
 import {UtilsService} from "../../services/utils.service";
-import {CalendarViewDayComponent} from "../../component/calendar-view-day/calendar-view-day.component";
 
 @Component({
   selector: 'app-home',
@@ -23,13 +22,12 @@ import {CalendarViewDayComponent} from "../../component/calendar-view-day/calend
   ]
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  viewMode = 'list';
+  viewMode = 'day';
   audioText = '手指上划取消录音';
   curDate = new Date();
   constructor(private media: Media, private file: File, private router: Router,
               private utils: UtilsService) {
   }
-  @ViewChild(CalendarViewDayComponent) CalendarViewDayComponent;
   navView = false;
   audioFile: MediaObject = null;
   isAudioRecording = false;
@@ -62,7 +60,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   openRecordSound2() {
     console.log('开始录音');
-
     this.isAudioRecording = true;
     // this.file.createFile(this.file.externalRootDirectory, 'my_file.mp3', true).then(() => {
     //     let file = this.media.create(this.file.externalRootDirectory + 'my_file.m4a');
@@ -89,7 +86,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   ionViewDidEnter() {
     console.log('进入首页');
-    this.CalendarViewDayComponent && this.CalendarViewDayComponent.initData();
+    // this.CalendarViewDayComponent && this.CalendarViewDayComponent.initData();
     this.isAudioRecording = false;
     this.audioFile = null;
     this.isAudioRecording = false;
@@ -133,6 +130,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
   enterCreateTaskPage(fileName?: string) {
     this.isAudioRecording = false;
+    console.log(this.router);
     this.router.navigate(['/task-create'], {queryParams: {fileName}})
   }
 }

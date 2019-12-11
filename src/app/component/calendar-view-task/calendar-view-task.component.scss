@@ -1,5 +1,6 @@
 .task-box{
   display: flex;
+  margin-bottom: 0;
   li{
     padding: 0 3px;
     list-style-type:none;
@@ -8,5 +9,29 @@
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-left: 2px solid rgba(green, .6);
     background-color: rgba(green, .1);
+    font-size: .8em;
   }
+}
+
+$offsetBase: 40px;
+.offset-1{
+
+}
+.offset-2{
+  margin-left: $offsetBase*2;
+  & + .offset-2{
+    margin-left: 0;
+  }
+}
+.offset-3{
+  margin-left: $offsetBase;
+}
+.offset-4{
+  margin-left: $offsetBase;
+}
+.offset-5{
+  margin-left: $offsetBase;
+}
+.offset-6{
+  margin-left: $offsetBase;
 }
