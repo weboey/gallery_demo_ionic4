@@ -9,7 +9,8 @@ import {ToastController} from "@ionic/angular";
   styleUrls: ['./task-detail.component.scss']
 })
 export class TaskDetailComponent implements OnInit {
-  taskItem = <any>{};
+  taskItem = <any>{title: ''};
+  title = '';
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
               public toastController: ToastController) { }
   isEdit = false;
@@ -18,6 +19,7 @@ export class TaskDetailComponent implements OnInit {
     this.activatedRoute.queryParamMap.subscribe((q: any) => {
       console.log(q.params);
       this.taskItem = q.params;
+      this.title = this.taskItem.title;
     })
   }
   openSelectDateModal() {
@@ -29,8 +31,13 @@ export class TaskDetailComponent implements OnInit {
       this.textInputEl.setFocus()
     }, 0)
   }
-
+  changeTitle(v) {
+    console.log(v);
+    console.log(this.taskItem);
+    this.title = v;
+  }
   async saveTaskHandler() {
+    console.log(this.taskItem);
     const toast = await this.toastController.create({
       message: '修改成功',
       duration: 2000
@@ -38,7 +45,7 @@ export class TaskDetailComponent implements OnInit {
     this.isEdit = false;
     this.http.put('/api_note/v1/note_view', {
       id: this.taskItem.id,
-      title: this.taskItem.title,
+      title: this.title,
       tip_time: this.taskItem.tip_time
     }).subscribe(() => {
       toast.present();

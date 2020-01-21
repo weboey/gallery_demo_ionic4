@@ -5,6 +5,16 @@
     background: #1890ff;
   }
 }
+.ant-fullcalendar-calendar-body{
+ background-color: #fff;
+  padding: 0 !important;
+  thead{
+    background-color: #f2f3f4;
+  }
+  thead, tbody{
+    padding: 8px 12px;
+  }
+}
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month-panel-selected-cell .ant-fullcalendar-month, .ant-fullcalendar-fullscreen .ant-fullcalendar-selected-day .ant-fullcalendar-date{
   background: initial !important;
 }
@@ -30,12 +40,14 @@
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-value{
   text-align: center;
+  transition: none !important; // 去掉颜色变化动画
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-column-header {
   padding-right: 12px;
   padding-bottom: 5px;
   padding-left: 10px;
   text-align: center;
+  line-height: 32px;
 }
 
 

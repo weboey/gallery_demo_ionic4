@@ -76,8 +76,8 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
       console.log(this.dateMatrixList);
       this.activeDate = this.currentDate;
       this.calculateActiveDate();
-      this.cd.detectChanges();
-    }, 200);
+      // this.cd.detectChanges();
+    }, 400);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -109,55 +109,32 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
       paginationType: 'fraction', // 分页器类型
       on: {
         // slideChange: () => {
-        //   console.log(this.swiper);
-        //   if (this.swiper && this.swiper.isEnd) {
-        //     this.swiper.slideTo(2, 0);
-        //   }
+        //   this.renderMonthDateMatrix(this.swiper.activeIndex);
         // }
       },
     });
   }
+  private renderMonthDateMatrix(index) {
+    if (typeof index === 'undefined') {
+      return;
+    }
+    if (this.swiper.swipeDirection === 'prev') {
+    } else {
+    }
+    // this.getTaskData(this.currentDate.getMonth() + 1, this.currentDate.getFullYear());
+  }
   getTaskData() {
     this.http.get('/api_note/v1/query_note_view', {
       params: {
-        query_type: '4'
+        query_type: '5'
       }
     }).subscribe((res: any) => {
       if (res) {
         const taskResults = res.results.note_data_list;
-        this.dateMatrixList[this.curPoint].forEach(weekItem => {
-          const weekTasks = [];
-          weekItem.forEach(col => {
-            console.log(col);
-            taskResults.forEach(tasks => {
-              let taskDate = new Date(tasks.tip_time);
-              // tasks['colOffset'] = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
-              if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
-                weekTasks.push(tasks);
-              }
-            });
-          });
-          console.log('这周的任务');
-          console.log(weekItem);
-          console.error(this.dateMatrixList[this.curPoint]);
-          this.dateMatrixList[this.curPoint].tasks = this.dateMatrixList[this.curPoint].tasks.map(row => {
-            const argsH = row[0][0].title.split(':')[0];
-            const argsM = row[0][0].title.split(':')[1];
-            weekTasks.forEach(item => {
-              let taskDate = new Date(item.tip_time);
-              let colOffset = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
-              let h = item.tip_time.split(' ')[1].split(':')[0];
-              let m = item.tip_time.split(' ')[1].split(':')[1];
-              if ( h == argsH && m > argsM && colOffset >= 0) {
-                console.error(colOffset);
-                row[colOffset+1].push(item)
-              }
-            })
-            // console.error([row[0]].concat(this.transform(weekTasks, row[0][0].title)));
-            // return [row[0]].concat(this.transform(weekTasks, row[0][0].title))
-            return row;
-          })
-          this.cd.detectChanges();
+        console.log('周的维度计算....');
+        console.log(taskResults);
+        this.dateMatrixList.forEach((item, index) => {
+          this.setWeekTask(index, taskResults);
         });
       }
     })
@@ -176,6 +153,42 @@ export class CalendarViewWeekComponent implements OnInit, AfterViewInit {
   //     }
   //   });
   // }
+  setWeekTask(index, taskResults) {
+    this.dateMatrixList[index].forEach(weekItem => {
+      const weekTasks = [];
+      weekItem.forEach(col => {
+        taskResults.forEach(tasks => {
+          let taskDate = new Date(tasks.tip_time);
+          // tasks['colOffset'] = differenceInCalendarDays(taskDate, addDays(this.calendarStart, this.activeDateRow * 7));
+          if(col.value.getMonth() === taskDate.getMonth() && col.value.getDate() === taskDate.getDate()) {
+            weekTasks.push(tasks);
+          }
+        });
+      });
+      // console.log('这周的任务');
+      // console.log(this.dateMatrixList[index]);
+      // console.log(weekItem);
+      // console.log(weekTasks);
+      this.dateMatrixList[index].tasks = this.dateMatrixList[index].tasks.map(row => {
+        const argsH = row[0][0].title.split(':')[0];
+        const argsM = row[0][0].title.split(':')[1];
+        weekTasks.forEach(item => {
+          let taskDate = new Date(item.tip_time);
+          const startOfWeekVal = startOfWeek(startOfMonth(weekItem[0].value), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() })
+          let colOffset = differenceInCalendarDays(taskDate, addDays(startOfWeekVal, this.activeDateRow * 7));
+          let h = item.tip_time.split(' ')[1].split(':')[0];
+          let m = item.tip_time.split(' ')[1].split(':')[1];
+          if ( h == argsH && m > argsM && colOffset >= 0) {
+            row[colOffset%7+1] && row[colOffset%7+1].push(item)
+          }
+        });
+        // console.error([row[0]].concat(this.transform(weekTasks, row[0][0].title)));
+        // return [row[0]].concat(this.transform(weekTasks, row[0][0].title))
+        return row;
+      });
+      this.cd.detectChanges();
+    });
+  }
 
   private get calendarStart(): Date {
     return startOfWeek(startOfMonth(this.activeDate), { weekStartsOn: this.dateHelper.getFirstDayOfWeek() });

@@ -23,29 +23,31 @@
 </ion-header>
 
 <ion-content [scrollY]="false">
-  <ng-container [ngSwitch]="viewMode">
-    <ng-container *ngSwitchCase="'month'" [ngTemplateOutlet]="monthModeTable"></ng-container>
-    <ng-container *ngSwitchCase="'week'"  [ngTemplateOutlet]="weekModeTable"></ng-container>
-    <ng-container *ngSwitchCase="'day'"   [ngTemplateOutlet]="dayModeTable"></ng-container>
-    <ng-container *ngSwitchCase="'list'"  [ngTemplateOutlet]="listModeTable"></ng-container>
-  </ng-container>
+  <ng-container *ngIf="isLogin; else noLoginTmp">
+    <ng-container [ngSwitch]="viewMode">
+      <ng-container *ngSwitchCase="'month'" [ngTemplateOutlet]="monthModeTable"></ng-container>
+      <ng-container *ngSwitchCase="'week'"  [ngTemplateOutlet]="weekModeTable"></ng-container>
+      <ng-container *ngSwitchCase="'day'"   [ngTemplateOutlet]="dayModeTable"></ng-container>
+      <ng-container *ngSwitchCase="'list'"  [ngTemplateOutlet]="listModeTable"></ng-container>
+    </ng-container>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'list' !== viewMode">
-    <ion-fab-button size="small" color="secondary">
-      <ion-icon name="add"  (tap)='enterCreateTaskPage()' (press)="openRecordSound()"
-                (touchend)="stopRecordSound()"
-                (touchmove)="oneP2($event)"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="'list' !== viewMode">
+      <ion-fab-button size="small" color="secondary">
+        <ion-icon name="add"  (tap)='enterCreateTaskPage()' (press)="openRecordSound()"
+                  (touchend)="stopRecordSound()"
+                  (touchmove)="oneP2($event)"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 
-  <ng-container>
-    <div class="audio-modal" *ngIf="isAudioRecording">
-      <ion-icon name="mic"></ion-icon>
-      <ion-icon name="stats"></ion-icon>
-      <p>正在录音</p>
-      <p>{{audioText}}</p>
-    </div>
+    <ng-container>
+      <div class="audio-modal" *ngIf="isAudioRecording">
+        <ion-icon name="mic"></ion-icon>
+        <p>保持长按开始录音</p>
+        <p>{{audioText}}</p>
+      </div>
+    </ng-container>
   </ng-container>
+  <ng-template #noLoginTmp></ng-template>
 </ion-content>
 
 <ng-template #monthModeTable>

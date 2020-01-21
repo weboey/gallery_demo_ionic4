@@ -15,8 +15,7 @@
         <div class="swiper-slide" *ngFor="let dateMatrixItem of dateMatrixList">
           <div class="swiper-zoom-container">
             <div class="week-body">
-
-              <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box my-week-body">
+              <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box my-week-body test">
                 <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell"
                     [class.ant-fullcalendar-today]="row === currentDateRow && col === currentDateCol"
                     [class.my-calendar-selected-day]="col === activeDateCol && dateMatrixItem.panel === activeDateRow"
@@ -27,9 +26,8 @@
               </ul>
               <ul class="week-task-box">
                 <li *ngFor="let time of dateMatrixItem.tasks; index as row" class="time-item">
-<!--                  <span>{{time}}</span>-->
                   <ul>
-                    <li *ngFor="let task of time; index as col" class="task-cell">
+                    <li *ngFor="let task of time; index as col; first as isFirst" class="task-cell" [class.left]="isFirst">
                         <span *ngFor="let taskChild of task;" (click)="enterTaskDetailPage($event, taskChild)">{{taskChild.title}}</span>
                     </li>
                   </ul>

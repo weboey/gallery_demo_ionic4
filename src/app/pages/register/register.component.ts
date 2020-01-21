@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit {
           v.present()
         });
         localStorage.setItem('appUser', JSON.stringify(this.user));
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
       }
     })
   }

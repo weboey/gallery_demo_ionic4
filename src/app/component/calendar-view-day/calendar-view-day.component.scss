@@ -75,29 +75,37 @@
   justify-content: space-between;
   width: 100%;
   padding-bottom: 72px;
+  padding-top: 16px;
   li.time-item{
     display: flex;
     list-style-type:none;
     margin: 0 4px;
-    padding: 10px 0;
+    //padding: 10px 0;
     color: rgba(0, 0, 0, 0.65);
     border-top: none !important;
     transition: background 0.3s;
     text-align: left;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-    height: 42px;
-    span{
+    //border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    height: 58px;
+    span.left{
       border-right: 1px solid rgba(0, 0, 0, 0.08);
       width: 48px;
       text-align: center;
       font-size: 12px;
-      margin-right: 10px;
+      //margin-right: 10px;
+      .label{
+        display: inline-block;
+        transform: translateY(-10px);
+      }
     }
     app-calendar-view-task{
       flex: 1;
+      padding: 6px;
+      border-top: 1px solid rgba(0, 0, 0, 0.15);
     }
   }
 }
+
 .content-body{
   width: 100%;
   height: calc(100vh - 100px);

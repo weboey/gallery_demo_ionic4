@@ -19,7 +19,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  ionViewCanLeave() {
+    return false;
+  }
   submitLogin() {
     // this.router.navigate(['/home']);
     this.http.post('/api_user/v1/login', this.user).subscribe((res: any) => {
@@ -33,6 +35,8 @@ export class LoginComponent implements OnInit {
         });
       } else if(res.code === '200') {
         localStorage.setItem('appUser', JSON.stringify(this.user));
+        localStorage.setItem('access_token', res.results.data_info.access_token);
+        localStorage.setItem('refresh_token', res.results.data_info.refresh_token);
         this.router.navigate(['/']);
       }
     })
@@ -43,6 +47,7 @@ export class LoginComponent implements OnInit {
       this.btnStatus = !(this.user.phone.length && this.user.password.length);
     }, 200);
   }
+
 
   switchPasswordInputType(pwdInput: any) {
     this.passwordType = this.passwordType === 'password' ? 'text' : 'password';

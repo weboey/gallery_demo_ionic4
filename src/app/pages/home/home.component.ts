@@ -4,7 +4,7 @@ import {File} from '@ionic-native/file/ngx';
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {Router} from "@angular/router";
 import {UtilsService} from "../../services/utils.service";
-
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -23,8 +23,9 @@ import {UtilsService} from "../../services/utils.service";
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   viewMode = 'day';
-  audioText = '手指上划取消录音';
+  audioText = '手指上划取消';
   curDate = new Date();
+  isLogin = false;
   constructor(private media: Media, private file: File, private router: Router,
               private utils: UtilsService) {
   }
@@ -49,13 +50,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   openRecordSound() {
-    console.log('开始录音');
-    this.audioText = '手指上划取消录音';
+    this.audioText = '手指上划取消';
     this.isAudioRecording = true;
     this.isStopRecord = false;
-    this.fileName = this.utils.generateRandomString(8);
-    this.audioFile = this.media.create(this.file.externalRootDirectory + `${this.fileName}.mp3`);
+    this.fileName = this.utils.generateRandomString(4) + '_' + new Date().getTime();
+    this.audioFile = this.media.create(this.file.externalDataDirectory + `${this.fileName}.mp3`);
     this.audioFile.startRecord();
+    // this.file.createDir(this.file.externalRootDirectory, 'fawo', false).then(() => {
+    //   this.file.createDir(this.file.externalRootDirectory, 'fawo/flie_recv', false).then((dir: any)=>{})
+    // }).catch(err => console.log(err));
   }
 
   openRecordSound2() {
@@ -82,7 +85,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }, 500);
   }
   ionViewWillEnter() {
-
+    this.isLogin = !!localStorage.getItem('appUser');
   }
   ionViewDidEnter() {
     console.log('进入首页');
@@ -105,10 +108,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   showNavListPanel() {
     this.navView = !this.navView;
+    this.file.createDir(this.file.externalRootDirectory, 'fawo', false).then(() => {
+    }).catch(err => console.log(err));
   }
 
   toggleMode(v) {
     this.viewMode = v;
+    this.curDate = new Date();
   }
 
   oneP2(ev) {
@@ -125,7 +131,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.isAudioRecording = false;
       setTimeout(()=>{
         this.enterCreateTaskPage(`${this.fileName}.mp3`)
-      }, 50)
+      }, 100)
     }
   }
   enterCreateTaskPage(fileName?: string) {

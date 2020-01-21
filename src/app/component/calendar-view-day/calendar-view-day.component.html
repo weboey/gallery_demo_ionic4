@@ -11,7 +11,7 @@
       </ul>
       <div class="calendar-body">
         <ng-container *ngFor="let dateMatrixItem of dateMatrixList;  index as row">
-          <ul class="time-box" [class.ant-fullcalendar-active-week]="row === activeDateRow">
+          <ul [class.ant-fullcalendar-active-week]="row === activeDateRow">
             <li>
               <ul *ngFor="let week of dateMatrixItem; index as row" class="calendar-box">
                 <li *ngFor="let day of week; index as col" class="ant-fullcalendar-cell"
@@ -41,13 +41,13 @@
                 </ul>
               </div>-->
               <div class="auto-content">
-                <div class="time-desc" (click)="doCalendarDayViewSize()">
+            <!--    <div class="time-desc" (click)="doCalendarDayViewSize()">
                   <span>{{activeDate | date: 'MM-dd'}}</span>
-                  <!-- {{taskItem.date}} <span class="back-cur-day" style="float: right">今</span>-->
-                </div>
+                  &lt;!&ndash; {{taskItem.date}} <span class="back-cur-day" style="float: right">今</span>&ndash;&gt;
+                </div>-->
                 <ul class="time-box">
                   <li *ngFor="let time of timeViewList; index as row" class="time-item">
-                    <span>{{time}}</span>
+                    <span class="left"><span class="label">{{time}}</span></span>
                     <app-calendar-view-task [items]="taskItem.tasks | filterTask: time"></app-calendar-view-task>
                   </li>
                 </ul>

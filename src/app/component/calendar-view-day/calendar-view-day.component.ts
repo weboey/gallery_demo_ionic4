@@ -245,7 +245,7 @@ export class CalendarViewDayComponent extends CalendarBase implements OnInit, Af
       this.createSwipe();
       console.log(this.dateMatrixList);
       console.log(this.taskList);
-    }, 300);
+    }, 500);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];

@@ -9,12 +9,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor() {}
 
-  static addToken(req: HttpRequest<any>, userId: string, token: string): HttpRequest<any> {
+  static addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
     return req.clone({
-      url: req.url,
+      url: 'http://47.112.218.7:80' + req.url,
       setHeaders: {
-        'X-UserId': userId || '',
-        Authorization: 'Bearer ' + token
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token')
       }
     });
   }
@@ -22,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if (req.url.match(/\w(\.gif|\.jpeg|\.png|\.jpg|\.bmp|\.ico)/i)) {
         return next.handle(req);
     }
-    return next.handle(req.clone({url: 'http://47.112.218.7:80' + req.url}));
+    return next.handle(AuthInterceptor.addToken(req, '123'));
     // Get the auth token from the service.
     // send cloned request with header to the next handler.
     // return next.handle(req);

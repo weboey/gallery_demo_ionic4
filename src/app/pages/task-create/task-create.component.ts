@@ -37,7 +37,7 @@ export class TaskCreateComponent implements OnInit {
             // console.log(this.file.externalRootDirectory + this.audioFileName);
             if (!!this.audioFileName) {
                 setTimeout(()=>{
-                    this.fileService.upload(this.file.externalRootDirectory + this.audioFileName).then((data: any) => {
+                    this.fileService.upload(this.file.externalDataDirectory  + this.audioFileName).then((data: any) => {
                         if (data.code === '200') {
                             this.audioFilePath = data.results.file_path;
                             this.content = data.results.content;
@@ -60,14 +60,14 @@ export class TaskCreateComponent implements OnInit {
 
     async openSelectDateModal() {
         const modal = await this.modalController.create({
-            component: <any>CalendarModalComponent
+            component: <any>CalendarModalComponent,
+          backdropDismiss: false
         });
-        modal.onWillDismiss().then(v => {
-            console.log(v);
+        modal.onDidDismiss().then(v => {
             this.curDate = v.data.curDate;
             this.curTime = v.data.curTime;
         });
-        return await modal.present();
+        modal.present();
     }
 
     async saveTaskHandler() {

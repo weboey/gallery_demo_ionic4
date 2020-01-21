@@ -10,6 +10,7 @@
     "test": "ng test",
     "add:android": "ionic cordova platform add android",
     "android:build": "ionic cordova build android --prod",
+    "build2": "ng run app:ionic-cordova-build:production --platform=android",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

@@ -97,13 +97,12 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.createSwipe();
-      console.log('当前视图的日历数据...');
-      console.log(this.activeDate);
-      console.log(this.dateMatrixList);
       this.activeDate = this.currentDate;
       this.calculateActiveDate();
-      this.cd.detectChanges();
-    }, 50);
+      if(this.isLoadData) {
+        this.cd.detectChanges();
+      }
+    }, 200);
   }
   private setUpDaysInWeek(): void {
     this.daysInWeek = [];
@@ -117,11 +116,13 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
       this.daysInWeek.push({ title, label });
     }
   }
-  getTaskData() {
+  getTaskData(month?: any, year?: any) {
     if(this.isLoadData) {
       this.http.get('/api_note/v1/query_note_view', {
         params: {
-          query_type: '5'
+          query_type: '5',
+          mouth: month ? month : '',
+          year: year ? year : ''
         }
       }).subscribe((res: any) => {
         if (res) {
@@ -134,8 +135,10 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
   }
   updateTask() {
     const curMonthView = this.dateMatrixList.find(item => item['month'] === this.currentDate.getMonth());
+    console.error('======================================================');
+    console.error(curMonthView);
+    console.error(this.activeMonthTasks);
     if(curMonthView) {
-      console.error(curMonthView);
       curMonthView.forEach(row => {
         row.forEach( col => {
           col.tasks = [];
@@ -146,7 +149,8 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
             }
           });
         })
-      })
+      });
+      this.cd.detectChanges();
     }
   }
   createSwipe() {
@@ -185,13 +189,11 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     } else {
       this.currentDate = addMonths(this.currentDate, 1)
     }
-    this.updateTask();
-    setTimeout( () => {
-      // this.swiper.update();
-    }, 100);
+    this.getTaskData(this.currentDate.getMonth() + 1, this.currentDate.getFullYear());
+    // this.updateTask();
     this.dateChange.emit(this.currentDate);
-    this.cd.detectChanges();
-    console.log('月份切换后的参数.............');
+    console.log('月份切换后的参数.....22........');
+    console.log(this.currentDate.getFullYear());
     console.log(formatDate(this.activeDate, 'yyyy-MM-dd', 'zh_CN'));
     console.log(formatDate(this.currentDate, 'yyyy-MM-dd', 'zh_CN'));
     console.log(this.activeDate.getMonth() == this.currentDate.getMonth());
@@ -259,15 +261,10 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     if(!this.isReady) {
       return;
     }
-    console.error('计算激活日期');
     this.activeDateRow = differenceInCalendarWeeks(this.activeDate, this.calendarStart, {
       weekStartsOn: this.dateHelper.getFirstDayOfWeek()
     });
     this.activeDateCol = differenceInCalendarDays(this.activeDate, addDays(this.calendarStart, this.activeDateRow * 7));
-    console.error(this.activeDate);
-    console.error(this.activeDateRow);
-    console.error(this.activeDateCol);
-
   }
   private calculateActiveMonth() {
     this.activeMonthRow = Math.floor(this.activeDate.getMonth() / 3);
@@ -288,9 +285,7 @@ export class CalendarViewComponent implements OnInit, AfterViewInit {
     }
   }
   monthChangeHandler(month: number) {
-    console.log(`计算第${month}的数据`);
-    const date = setMonth(this.activeDate, month);
-    console.log(formatDate(date, 'yyyy-MM-dd', 'zh_CN'));
+    const date = setMonth(this.currentDate, month);
     this.updateDate(date);
   }
   private updateDate(date: Date, touched: boolean = true): void {

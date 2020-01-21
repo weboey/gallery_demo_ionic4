@@ -30,7 +30,8 @@ export class AppComponent {
       this.platform.ready().then(() => {
           this.statusBar.styleDefault();
           this.statusBar.styleBlackOpaque();
-          this.statusBar.backgroundColorByHexString("#2a2d32");
+          // this.statusBar.overlaysWebView(true);
+          this.statusBar.backgroundColorByHexString("#36C2CF");
           this.splashScreen.hide();
           if (!localStorage.getItem('isPermission')) {
               let audioFile = this.media.create(this.file.dataDirectory + `audio.mp3`);

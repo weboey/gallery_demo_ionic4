@@ -1,6 +1,6 @@
 .audio-modal{
   text-align: center;
-  background-color: rgba(#929292, 1);
+  background-color: rgba(#CCC, .7);
   width: 150px;
   height: 150px;
   padding: 16px 0;
@@ -10,11 +10,11 @@
   transform: translate(-50%,-50%);
   ion-icon{
     font-size: 4rem;
-    color: #0bb8cc;
+    color: #333;
   }
   p{
     margin-bottom: .5em;
-    color: #fff;
+    color: #333;
   }
   z-index: 10000;
 }

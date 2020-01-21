@@ -30,11 +30,9 @@ export class CalendarModalComponent {
     });
   }
   setDate(ev, field){
-    console.log(ev.detail.value);
     this[field] = ev.detail.value;
   }
   monthDateChangeHandler(date) {
-    console.log(formatDate(date, 'yyyy-MM-dd HH:mm', 'zh_CN'));
     this.curDate = date;
   }
 
